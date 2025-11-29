@@ -1,34 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:ShopperMaui.Models"
              x:Class="ShopperMaui.Controls.RecipeItemControl"
-             x:Name="Root">
+             x:Name="Root"
+             x:DataType="models:Recipe">
     <Border Style="{StaticResource CardBorder}" Margin="0,8">
         <VerticalStackLayout Spacing="12">
             <VerticalStackLayout Spacing="4">
-                <Label Text="{Binding Recipe.Name, Source={x:Reference Root}}"
+                  <Label Text="{Binding Name}"
                        FontSize="18"
                        FontAttributes="Bold" />
-                <Label Text="{Binding Recipe.Description, Source={x:Reference Root}}"
+                  <Label Text="{Binding Description}"
                        TextColor="{StaticResource TextSecondary}"
                        LineBreakMode="WordWrap" />
             </VerticalStackLayout>
 
             <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8">
                 <Button Grid.Column="0"
-                        Text="Dodaj do listy"
-                        Command="{Binding AddCommand, Source={x:Reference Root}}"
-                        CommandParameter="{Binding Recipe, Source={x:Reference Root}}"
+                    Text="Dodaj do listy"
+                    Command="{Binding AddCommand, Source={x:Reference Root}}"
+                    CommandParameter="{Binding .}"
                         Style="{StaticResource SecondaryButton}" />
                 <Button Grid.Column="1"
                         Text="Edytuj"
-                        Command="{Binding EditCommand, Source={x:Reference Root}}"
-                        CommandParameter="{Binding Recipe, Source={x:Reference Root}}"
+                    Command="{Binding EditCommand, Source={x:Reference Root}}"
+                    CommandParameter="{Binding .}"
                         Style="{StaticResource GhostButton}" />
                 <Button Grid.Column="2"
                         Text="Usuń"
-                        Command="{Binding DeleteCommand, Source={x:Reference Root}}"
-                        CommandParameter="{Binding Recipe, Source={x:Reference Root}}"
+                    Command="{Binding DeleteCommand, Source={x:Reference Root}}"
+                    CommandParameter="{Binding .}"
                         Style="{StaticResource GhostButton}"
                         TextColor="{StaticResource Danger}" />
             </Grid>

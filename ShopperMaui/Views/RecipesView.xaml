@@ -13,8 +13,7 @@
                         EmptyView="Brak przepisów">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <controls:RecipeItemControl Recipe="{Binding .}"
-                                                AddCommand="{Binding BindingContext.AddRecipeToListCommand, Source={x:Reference RecipesCollection}}"
+                    <controls:RecipeItemControl AddCommand="{Binding BindingContext.AddRecipeToListCommand, Source={x:Reference RecipesCollection}}"
                                                 EditCommand="{Binding BindingContext.EditRecipeCommand, Source={x:Reference RecipesCollection}}"
                                                 DeleteCommand="{Binding BindingContext.DeleteRecipeCommand, Source={x:Reference RecipesCollection}}" />
                 </DataTemplate>

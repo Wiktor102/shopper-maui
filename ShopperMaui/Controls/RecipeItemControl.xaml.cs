@@ -1,4 +1,3 @@
-using ShopperMaui.Models;
 using System.Windows.Input;
 
 namespace ShopperMaui.Controls;
@@ -8,9 +7,6 @@ public partial class RecipeItemControl : ContentView {
 		InitializeComponent();
 	}
 
-	public static readonly BindableProperty RecipeProperty = BindableProperty.Create(
-		nameof(Recipe), typeof(Recipe), typeof(RecipeItemControl));
-
 	public static readonly BindableProperty AddCommandProperty = BindableProperty.Create(
 		nameof(AddCommand), typeof(ICommand), typeof(RecipeItemControl));
 
@@ -19,11 +15,6 @@ public partial class RecipeItemControl : ContentView {
 
 	public static readonly BindableProperty DeleteCommandProperty = BindableProperty.Create(
 		nameof(DeleteCommand), typeof(ICommand), typeof(RecipeItemControl));
-
-	public Recipe Recipe {
-		get => (Recipe)GetValue(RecipeProperty);
-		set => SetValue(RecipeProperty, value);
-	}
 
 	public ICommand? AddCommand {
 		get => (ICommand?)GetValue(AddCommandProperty);
