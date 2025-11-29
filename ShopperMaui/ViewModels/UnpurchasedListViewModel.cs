@@ -1,19 +1,15 @@
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Threading.Tasks;
 using ShopperMaui.Helpers;
 using ShopperMaui.Models;
 using ShopperMaui.ViewModels.Commands;
+using System.Collections.ObjectModel;
 
 namespace ShopperMaui.ViewModels;
 
-public class UnpurchasedListViewModel : BaseViewModel
-{
+public class UnpurchasedListViewModel : BaseViewModel {
 	private readonly MainViewModel _mainViewModel;
 	private SortingPreference _currentSorting = SortingPreference.Category;
 
-	public UnpurchasedListViewModel(MainViewModel mainViewModel)
-	{
+	public UnpurchasedListViewModel(MainViewModel mainViewModel) {
 		_mainViewModel = mainViewModel;
 		Title = "Niezakupione";
 		UnpurchasedProducts = new ObservableCollection<ProductViewModel>();
@@ -27,13 +23,10 @@ public class UnpurchasedListViewModel : BaseViewModel
 
 	public ObservableCollection<ProductViewModel> UnpurchasedProducts { get; }
 
-	public SortingPreference CurrentSorting
-	{
+	public SortingPreference CurrentSorting {
 		get => _currentSorting;
-		set
-		{
-			if (SetProperty(ref _currentSorting, value))
-			{
+		set {
+			if (SetProperty(ref _currentSorting, value)) {
 				RefreshProducts();
 			}
 		}
@@ -45,8 +38,7 @@ public class UnpurchasedListViewModel : BaseViewModel
 
 	public RelayCommand SortByQuantityCommand { get; }
 
-	public Task InitializeAsync()
-	{
+	public Task InitializeAsync() {
 		RefreshProducts();
 		return Task.CompletedTask;
 	}
@@ -54,23 +46,20 @@ public class UnpurchasedListViewModel : BaseViewModel
 	private void UpdateSorting(SortingPreference preference)
 		=> CurrentSorting = preference;
 
-	private void RefreshProducts()
-	{
+	private void RefreshProducts() {
 		var filtered = _mainViewModel
 			.GetAllProducts()
 			.Where(p => !p.IsPurchased)
 			.ToList();
 
-		filtered = CurrentSorting switch
-		{
+		filtered = CurrentSorting switch {
 			SortingPreference.Name => SortingHelper.SortByName(filtered),
 			SortingPreference.Quantity => SortingHelper.SortByQuantity(filtered),
 			_ => SortingHelper.SortByCategory(filtered)
 		};
 
 		UnpurchasedProducts.Clear();
-		foreach (var product in filtered)
-		{
+		foreach (var product in filtered) {
 			UnpurchasedProducts.Add(product);
 		}
 	}

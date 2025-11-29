@@ -1,22 +1,18 @@
-using Microsoft.Maui.Controls;
 using ShopperMaui.Helpers;
 using ShopperMaui.ViewModels;
 
 namespace ShopperMaui.Views;
 
-public partial class UnpurchasedListView : ContentPage
-{
-    private UnpurchasedListViewModel ViewModel => (UnpurchasedListViewModel)BindingContext;
+public partial class UnpurchasedListView : ContentPage {
+	private UnpurchasedListViewModel ViewModel => (UnpurchasedListViewModel)BindingContext;
 
-    public UnpurchasedListView()
-    {
-        InitializeComponent();
-        BindingContext = ServiceHelper.GetService<UnpurchasedListViewModel>();
-    }
+	public UnpurchasedListView() {
+		InitializeComponent();
+		BindingContext = ServiceHelper.GetService<UnpurchasedListViewModel>();
+	}
 
-    protected override async void OnAppearing()
-    {
-        base.OnAppearing();
-        await ViewModel.InitializeAsync();
-    }
+	protected override async void OnAppearing() {
+		base.OnAppearing();
+		await ViewModel.InitializeAsync();
+	}
 }
