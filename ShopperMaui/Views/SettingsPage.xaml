@@ -9,33 +9,64 @@
     <ScrollView>
         <VerticalStackLayout Padding="16" Spacing="24">
             
+            <!-- Data Management Section -->
             <VerticalStackLayout Spacing="8">
-                <Label Text="Zarządzanie" Style="{StaticResource SectionHeader}" />
+                <Label Text="Zarządzanie danymi" Style="{StaticResource SectionHeader}" />
                 
-                <Border Style="{StaticResource CardBorder}">
-                    <VerticalStackLayout Spacing="0">
-                        <Button Text="Kategorie"
-                                Command="{Binding ManageCategoriesCommand}"
-                                Style="{StaticResource GhostButton}"
-                                HorizontalOptions="Fill"/>
-                        
-                        <BoxView HeightRequest="1" Color="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray700}}" Margin="16,0" />
-                        
-                        <Button Text="Sklepy"
-                                Command="{Binding ManageStoresCommand}"
-                                Style="{StaticResource GhostButton}"
-                                HorizontalOptions="Fill"/>
-                    </VerticalStackLayout>
+                <Border Style="{StaticResource CardBorder}" Padding="0">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ManageDataCommand}" />
+                    </Border.GestureRecognizers>
+                    <Grid>
+                        <HorizontalStackLayout Padding="16,0" 
+                                               VerticalOptions="Center" 
+                                               Spacing="12"
+                                               InputTransparent="True">
+                            <Label Text="📦" FontSize="20" VerticalOptions="Center"/>
+                            <VerticalStackLayout VerticalOptions="Center" Spacing="2">
+                                <Label Text="Kategorie i sklepy" 
+                                       FontSize="16"
+                                       FontAttributes="Bold"/>
+                                <Label Text="Zarządzaj kategoriami produktów i sklepami"
+                                       FontSize="12"
+                                       TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}"/>
+                            </VerticalStackLayout>
+                        </HorizontalStackLayout>
+                        <Label Text="›" 
+                               FontSize="24" 
+                               TextColor="{AppThemeBinding Light={StaticResource Gray400}, Dark={StaticResource Gray500}}"
+                               HorizontalOptions="End" 
+                               VerticalOptions="Center"
+                               Margin="0,0,16,0"
+                               InputTransparent="True"/>
+                    </Grid>
                 </Border>
             </VerticalStackLayout>
 
+            <!-- App Info Section -->
             <VerticalStackLayout Spacing="8">
-                <Label Text="Aplikacja" Style="{StaticResource SectionHeader}" />
+                <Label Text="Informacje" Style="{StaticResource SectionHeader}" />
                 <Border Style="{StaticResource CardBorder}">
-                    <VerticalStackLayout Spacing="12">
-                        <Label Text="ShopperMaui v1.0" 
-                               TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}"
-                               HorizontalOptions="Center" />
+                    <VerticalStackLayout Spacing="16">
+                        <HorizontalStackLayout Spacing="12" HorizontalOptions="Center">
+                            <Label Text="🛒" FontSize="32" VerticalOptions="Center"/>
+                            <VerticalStackLayout VerticalOptions="Center">
+                                <Label Text="ShopperMaui" 
+                                       FontSize="18"
+                                       FontAttributes="Bold"/>
+                                <Label Text="{Binding AppVersion}"
+                                       FontSize="14"
+                                       TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}"/>
+                            </VerticalStackLayout>
+                        </HorizontalStackLayout>
+                        
+                        <BoxView HeightRequest="1" 
+                                 Color="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray700}}" />
+                        
+                        <Label Text="Aplikacja do zarządzania listą zakupów, przepisami i planowania zakupów w różnych sklepach."
+                               FontSize="14"
+                               TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}"
+                               HorizontalTextAlignment="Center"/>
                     </VerticalStackLayout>
                 </Border>
             </VerticalStackLayout>

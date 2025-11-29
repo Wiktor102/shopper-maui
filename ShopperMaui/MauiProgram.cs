@@ -27,8 +27,7 @@ public static class MauiProgram {
 		builder.Services.AddTransient<AddCategoryViewModel>();
 		builder.Services.AddTransient<RecipesViewModel>();
 		builder.Services.AddTransient<AddEditRecipeViewModel>();
-		builder.Services.AddTransient<ManageCategoriesViewModel>();
-		builder.Services.AddTransient<ManageStoresViewModel>();
+		builder.Services.AddTransient<ManageDataViewModel>();
 		builder.Services.AddTransient<SettingsViewModel>();
 
 		builder.Services.AddSingleton<AppShell>();

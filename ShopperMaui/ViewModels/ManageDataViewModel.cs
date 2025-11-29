@@ -5,51 +5,71 @@ using ShopperMaui.ViewModels.Commands;
 
 namespace ShopperMaui.ViewModels;
 
-public class ManageStoresViewModel : BaseViewModel {
+public class ManageDataViewModel : BaseViewModel {
 	private readonly MainViewModel _mainViewModel;
 	private readonly INavigationService _navigationService;
 	private readonly IDialogService _dialogService;
+	private int _selectedTabIndex;
 
-	public ManageStoresViewModel(MainViewModel mainViewModel, INavigationService navigationService, IDialogService dialogService) {
+	public ManageDataViewModel(MainViewModel mainViewModel, INavigationService navigationService, IDialogService dialogService) {
 		_mainViewModel = mainViewModel;
 		_navigationService = navigationService;
 		_dialogService = dialogService;
 
-		Title = "Sklepy";
+		Title = "Zarządzanie danymi";
 
+		// Category commands
+		AddCategoryCommand = new RelayCommand(() => _ = _mainViewModel.NavigateToAddCategoryAsync());
+
+		// Store commands
 		AddStoreCommand = new AsyncRelayCommand(AddStoreAsync);
-		CloseCommand = new RelayCommand(() => _ = _navigationService.GoBackAsync());
 		RenameStoreCommand = new AsyncRelayCommand(parameter =>
 			parameter is string store ? RenameStoreAsync(store) : Task.CompletedTask);
 		DeleteStoreCommand = new AsyncRelayCommand(parameter =>
 			parameter is string store ? DeleteStoreAsync(store) : Task.CompletedTask);
+
+		CloseCommand = new RelayCommand(() => _ = _navigationService.GoBackAsync());
 	}
 
+	public int SelectedTabIndex {
+		get => _selectedTabIndex;
+		set => SetProperty(ref _selectedTabIndex, value);
+	}
+
+	// Categories
+	public ObservableCollection<CategoryViewModel> Categories => _mainViewModel.Categories;
+	public bool HasCategories => Categories.Any();
+	public RelayCommand AddCategoryCommand { get; }
+
+	// Stores
 	public ObservableCollection<string> Stores => _mainViewModel.Stores;
-
 	public bool HasStores => Stores.Any();
-
 	public AsyncRelayCommand AddStoreCommand { get; }
+	public AsyncRelayCommand RenameStoreCommand { get; }
+	public AsyncRelayCommand DeleteStoreCommand { get; }
 
 	public RelayCommand CloseCommand { get; }
 
-	public AsyncRelayCommand RenameStoreCommand { get; }
-
-	public AsyncRelayCommand DeleteStoreCommand { get; }
-
 	public async Task InitializeAsync() {
 		await _mainViewModel.InitializeAsync();
+		OnPropertyChanged(nameof(HasCategories));
 		OnPropertyChanged(nameof(HasStores));
 	}
 
 	public void Attach() {
+		_mainViewModel.Categories.CollectionChanged += OnCategoriesChanged;
 		Stores.CollectionChanged += OnStoresChanged;
+		OnPropertyChanged(nameof(HasCategories));
 		OnPropertyChanged(nameof(HasStores));
 	}
 
 	public void Detach() {
+		_mainViewModel.Categories.CollectionChanged -= OnCategoriesChanged;
 		Stores.CollectionChanged -= OnStoresChanged;
 	}
+
+	private void OnCategoriesChanged(object? sender, NotifyCollectionChangedEventArgs e)
+		=> OnPropertyChanged(nameof(HasCategories));
 
 	private void OnStoresChanged(object? sender, NotifyCollectionChangedEventArgs e)
 		=> OnPropertyChanged(nameof(HasStores));

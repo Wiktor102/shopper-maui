@@ -31,8 +31,6 @@ public class MainViewModel : BaseViewModel {
 		AddCategoryCommand = new RelayCommand(() => _ = NavigateToAddCategoryAsync());
 		NavigateToUnpurchasedViewCommand = new RelayCommand(() => _ = NavigateToUnpurchasedViewAsync());
 		NavigateToRecipesCommand = new RelayCommand(() => _ = NavigateToRecipesAsync());
-		ManageCategoriesCommand = new RelayCommand(() => _ = NavigateToManageCategoriesAsync());
-		ManageStoresCommand = new RelayCommand(() => _ = NavigateToManageStoresAsync());
 		AddProductCommand = new AsyncRelayCommand(NavigateToAddProductAsync, () => !IsBusy, busy => IsBusy = busy);
 		ExportListCommand = new AsyncRelayCommand(ExportListAsync, () => !IsBusy, busy => IsBusy = busy);
 		ImportListCommand = new AsyncRelayCommand(ImportListAsync, () => !IsBusy, busy => IsBusy = busy);
@@ -60,10 +58,6 @@ public class MainViewModel : BaseViewModel {
 	public RelayCommand NavigateToUnpurchasedViewCommand { get; }
 
 	public RelayCommand NavigateToRecipesCommand { get; }
-
-	public RelayCommand ManageCategoriesCommand { get; }
-
-	public RelayCommand ManageStoresCommand { get; }
 
 	public AsyncRelayCommand AddProductCommand { get; }
 
@@ -394,12 +388,6 @@ public class MainViewModel : BaseViewModel {
 
 	private Task NavigateToRecipesAsync()
 		=> _navigationService.NavigateToAsync<RecipesViewModel>();
-
-	private Task NavigateToManageCategoriesAsync()
-		=> _navigationService.NavigateToAsync<ManageCategoriesViewModel>();
-
-	private Task NavigateToManageStoresAsync()
-		=> _navigationService.NavigateToAsync<ManageStoresViewModel>();
 
 	private void OnShoppingListUpdated()
 		=> ShoppingListUpdated?.Invoke(this, EventArgs.Empty);

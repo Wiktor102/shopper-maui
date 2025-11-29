@@ -12,6 +12,8 @@
             </ResourceDictionary.MergedDictionaries>
             <helpers:StringNotNullOrEmptyConverter x:Key="StringNotNullOrEmptyConverter" />
             <helpers:InverseBooleanConverter x:Key="InverseBooleanConverter" />
+            <helpers:TabBackgroundConverter x:Key="TabBackgroundConverter" />
+            <helpers:TabVisibilityConverter x:Key="TabVisibilityConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

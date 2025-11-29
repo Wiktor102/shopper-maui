@@ -10,17 +10,13 @@ public class SettingsViewModel : BaseViewModel {
 		_navigationService = navigationService;
 		Title = "Ustawienia";
 
-		ManageCategoriesCommand = new RelayCommand(() => _ = NavigateToManageCategoriesAsync());
-		ManageStoresCommand = new RelayCommand(() => _ = NavigateToManageStoresAsync());
+		ManageDataCommand = new RelayCommand(() => _ = NavigateToManageDataAsync());
 	}
 
-	public RelayCommand ManageCategoriesCommand { get; }
+	public RelayCommand ManageDataCommand { get; }
 
-	public RelayCommand ManageStoresCommand { get; }
+	public string AppVersion => "ShopperMaui v1.0";
 
-	private Task NavigateToManageCategoriesAsync()
-		=> _navigationService.NavigateToAsync<ManageCategoriesViewModel>();
-
-	private Task NavigateToManageStoresAsync()
-		=> _navigationService.NavigateToAsync<ManageStoresViewModel>();
+	private Task NavigateToManageDataAsync()
+		=> _navigationService.NavigateToAsync<ManageDataViewModel>();
 }
