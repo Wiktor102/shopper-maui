@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:ShopperMaui.ViewModels"
+             x:Class="ShopperMaui.Controls.ProductControl"
+             x:DataType="vm:ProductViewModel">
+    <Border StrokeThickness="1"
+            Stroke="{DynamicResource Secondary}">
+        <Grid Padding="4"
+              ColumnDefinitions="Auto,*,Auto,Auto,Auto"
+              RowDefinitions="Auto,Auto"
+              ColumnSpacing="8"
+              RowSpacing="4"
+              VerticalOptions="Center">
+            <CheckBox Grid.RowSpan="2"
+                      IsChecked="{Binding IsPurchased}"
+                      VerticalOptions="Center" />
+
+            <Label Grid.Column="1"
+                   Text="{Binding Name}"
+                   FontAttributes="Bold"
+                   VerticalOptions="Center">
+                <Label.Triggers>
+                    <DataTrigger TargetType="Label" Binding="{Binding IsPurchased}" Value="True">
+                        <Setter Property="TextDecorations" Value="Strikethrough" />
+                        <Setter Property="TextColor" Value="Gray" />
+                    </DataTrigger>
+                </Label.Triggers>
+            </Label>
+
+            <HorizontalStackLayout Grid.Column="2"
+                                   Spacing="0"
+                                   VerticalOptions="Center">
+                <Button Text="-"
+                        Command="{Binding DecreaseQuantityCommand}"
+                        WidthRequest="36" />
+                <Entry Text="{Binding Quantity, Mode=TwoWay}"
+                       WidthRequest="60"
+                       HorizontalTextAlignment="Center"
+                       Keyboard="Numeric" />
+                <Button Text="+"
+                        Command="{Binding IncreaseQuantityCommand}"
+                        WidthRequest="36" />
+            </HorizontalStackLayout>
+
+            <Picker Grid.Column="3"
+                    ItemsSource="{Binding AvailableUnits}"
+                    SelectedItem="{Binding Unit, Mode=TwoWay}"
+                    WidthRequest="110" />
+
+            <Button Grid.Column="4"
+                    Text="Usuń"
+                    Command="{Binding DeleteProductCommand}" />
+
+            <Label Grid.Row="1"
+                   Grid.Column="1"
+                   Text="{Binding StoreName, StringFormat='Sklep: {0}'}"
+                   TextColor="Gray"
+                   FontSize="12" />
+
+            <Label Grid.Row="1"
+                   Grid.Column="2"
+                   Text="Opcjonalny"
+                   FontSize="12"
+                   TextColor="{DynamicResource Primary}">
+                <Label.Triggers>
+                    <DataTrigger TargetType="Label" Binding="{Binding IsOptional}" Value="False">
+                        <Setter Property="IsVisible" Value="False" />
+                    </DataTrigger>
+                </Label.Triggers>
+            </Label>
+
+            <Picker Grid.Row="1"
+                    Grid.Column="3"
+                    ItemsSource="{Binding AvailableStores}"
+                    SelectedItem="{Binding StoreName, Mode=TwoWay}"
+                    Title="Sklep"
+                    WidthRequest="120" />
+        </Grid>
+
+        <Border.Triggers>
+            <DataTrigger TargetType="Border" Binding="{Binding IsOptional}" Value="True">
+                <Setter Property="StrokeDashArray" Value="2,2" />
+            </DataTrigger>
+            <DataTrigger TargetType="Border" Binding="{Binding IsPurchased}" Value="True">
+                <Setter Property="Opacity" Value="0.5" />
+            </DataTrigger>
+        </Border.Triggers>
+    </Border>
+</ContentView>
