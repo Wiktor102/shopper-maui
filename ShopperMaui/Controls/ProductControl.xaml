@@ -5,85 +5,111 @@
              x:Class="ShopperMaui.Controls.ProductControl"
              x:DataType="vm:ProductViewModel">
     <Border StrokeThickness="1"
-            Stroke="{DynamicResource Secondary}">
-        <Grid Padding="4"
-              ColumnDefinitions="Auto,*,Auto,Auto,Auto"
-              RowDefinitions="Auto,Auto"
-              ColumnSpacing="8"
-              RowSpacing="4"
-              VerticalOptions="Center">
-            <CheckBox Grid.RowSpan="2"
-                      IsChecked="{Binding IsPurchased}"
-                      VerticalOptions="Center" />
-            
-            <Label Grid.Column="1"
-                   Text="{Binding Name}"
-                   FontAttributes="Bold"
-                   VerticalOptions="Center">
-                <Label.Triggers>
-                    <DataTrigger TargetType="Label" Binding="{Binding IsPurchased}" Value="True">
-                        <Setter Property="TextDecorations" Value="Strikethrough" />
-                        <Setter Property="TextColor" Value="Gray" />
-                    </DataTrigger>
-                </Label.Triggers>
-            </Label>
+            Stroke="{DynamicResource Secondary}"
+            Padding="12">
+        <VerticalStackLayout Spacing="12">
+            <!-- Product Info Row -->
+            <Grid ColumnDefinitions="Auto,*,Auto,Auto,Auto"
+                  ColumnSpacing="12"
+                  VerticalOptions="Center">
+                <CheckBox Grid.Column="0"
+                          IsChecked="{Binding IsPurchased}"
+                          VerticalOptions="Center"/>
 
-            <HorizontalStackLayout Grid.Column="2"
-                                   Spacing="0"
-                                   VerticalOptions="Center">
-                <Button Text="-"
-                        Command="{Binding DecreaseQuantityCommand}"
-                        WidthRequest="36" />
-                <Entry Text="{Binding Quantity, Mode=TwoWay}"
-                       WidthRequest="60"
-                       HorizontalTextAlignment="Center"
-                       Keyboard="Numeric" />
-                <Button Text="+"
-                        Command="{Binding IncreaseQuantityCommand}"
-                        WidthRequest="36" />
-            </HorizontalStackLayout>
+                <Label Grid.Column="1"
+                       Text="{Binding Name}"
+                       FontAttributes="Bold"
+                       FontSize="16"
+                       VerticalOptions="Center">
+                    <Label.Triggers>
+                        <DataTrigger TargetType="Label"
+                                Binding="{Binding IsPurchased}"
+                                Value="True">
+                            <Setter Property="TextDecorations"
+                                    Value="Strikethrough"/>
+                            <Setter Property="TextColor"
+                                    Value="Gray"/>
+                        </DataTrigger>
+                    </Label.Triggers>
+                </Label>
 
-            <Picker Grid.Column="3"
-                    ItemsSource="{Binding AvailableUnits}"
-                    SelectedItem="{Binding Unit, Mode=TwoWay}"
-                    WidthRequest="110" />
+                <HorizontalStackLayout Grid.Column="2"
+                                       Spacing="4"
+                                       VerticalOptions="Center">
+                    <Button Text="-"
+                            Command="{Binding DecreaseQuantityCommand}"
+                            WidthRequest="36"
+                            HeightRequest="36"
+                            Padding="0"/>
+                    <Entry Text="{Binding Quantity, Mode=TwoWay}"
+                           WidthRequest="50"
+                           HorizontalTextAlignment="Center"
+                           Keyboard="Numeric"
+                           VerticalOptions="Center"/>
+                    <Button Text="+"
+                            Command="{Binding IncreaseQuantityCommand}"
+                            WidthRequest="36"
+                            HeightRequest="36"
+                            Padding="0"/>
+                </HorizontalStackLayout>
 
-            <Button Grid.Column="4"
-                    Text="Usuń"
-                    Command="{Binding DeleteProductCommand}" />
+                <Picker Grid.Column="3"
+                        ItemsSource="{Binding AvailableUnits}"
+                        SelectedItem="{Binding Unit, Mode=TwoWay}"
+                        WidthRequest="100"
+                        VerticalOptions="Center"/>
 
-            <HorizontalStackLayout Grid.Row="1"
-                                    Grid.Column="1"
-                                    Grid.ColumnSpan="2"
-                                    Spacing="8">
-                <Picker ItemsSource="{Binding AvailableStores}"
+                <Button Grid.Column="4"
+                        Text="Usuń"
+                        Command="{Binding DeleteProductCommand}"
+                        WidthRequest="60"/>
+            </Grid>
+
+            <!-- Store Selection Row -->
+            <Grid ColumnDefinitions="*,Auto"
+                  ColumnSpacing="12"
+                  VerticalOptions="Center">
+                <Picker Grid.Column="0"
+                        ItemsSource="{Binding AvailableStores}"
                         SelectedItem="{Binding StoreName, Mode=TwoWay}"
-                        Title="Wybierz sklep"
-                        WidthRequest="160" />
-                <Button Text="Wyczyść"
-                        Command="{Binding ClearStoreCommand}"
-                        IsEnabled="{Binding StoreName, Converter={StaticResource StringNotNullOrEmptyConverter}}" />
-            </HorizontalStackLayout>
-
-            <Label Grid.Row="1"
-                   Grid.Column="3"
-                   Text="Opcjonalny"
-                   FontSize="12"
-                   TextColor="{DynamicResource Primary}">
-                <Label.Triggers>
-                    <DataTrigger TargetType="Label" Binding="{Binding IsOptional}" Value="False">
-                        <Setter Property="IsVisible" Value="False" />
-                    </DataTrigger>
-                </Label.Triggers>
-            </Label>
-        </Grid>
+                        Title="Wybierz sklep"/>
+                <HorizontalStackLayout Grid.Column="1"
+                                       Spacing="8"
+                                       VerticalOptions="End">
+                    <Button Text="Wyczyść"
+                            Style="{StaticResource SecondaryButton}"
+                            Command="{Binding ClearStoreCommand}"
+                            IsEnabled="{Binding StoreName, Converter={StaticResource StringNotNullOrEmptyConverter}}"
+                            WidthRequest="80"/>
+                    <Label Text="Opcjonalny"
+                           FontSize="12"
+                           TextColor="{DynamicResource Primary}"
+                           VerticalOptions="Center">
+                        <Label.Triggers>
+                            <DataTrigger TargetType="Label"
+                                    Binding="{Binding IsOptional}"
+                                    Value="False">
+                                <Setter Property="IsVisible"
+                                        Value="False"/>
+                            </DataTrigger>
+                        </Label.Triggers>
+                    </Label>
+                </HorizontalStackLayout>
+            </Grid>
+        </VerticalStackLayout>
 
         <Border.Triggers>
-            <DataTrigger TargetType="Border" Binding="{Binding IsOptional}" Value="True">
-                <Setter Property="StrokeDashArray" Value="2,2" />
+            <DataTrigger TargetType="Border"
+                    Binding="{Binding IsOptional}"
+                    Value="True">
+                <Setter Property="StrokeDashArray"
+                        Value="2,2"/>
             </DataTrigger>
-            <DataTrigger TargetType="Border" Binding="{Binding IsPurchased}" Value="True">
-                <Setter Property="Opacity" Value="0.5" />
+            <DataTrigger TargetType="Border"
+                    Binding="{Binding IsPurchased}"
+                    Value="True">
+                <Setter Property="Opacity"
+                        Value="0.5"/>
             </DataTrigger>
         </Border.Triggers>
     </Border>
