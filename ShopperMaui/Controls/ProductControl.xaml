@@ -4,13 +4,16 @@
              xmlns:vm="clr-namespace:ShopperMaui.ViewModels"
              x:Class="ShopperMaui.Controls.ProductControl"
              x:DataType="vm:ProductViewModel">
-    <Border StrokeThickness="1"
-            Stroke="{DynamicResource Secondary}"
-            Padding="12">
-        <VerticalStackLayout Spacing="12">
+    <Border Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource PrimaryLight}}" 
+            StrokeThickness="1" 
+            StrokeShape="RoundRectangle 8" 
+            Padding="8" 
+            Margin="0,4" 
+            BackgroundColor="{AppThemeBinding Light={StaticResource CardBackground}, Dark={StaticResource CardBackgroundDark}}">
+        <VerticalStackLayout Spacing="8">
             <!-- Product Info Row -->
             <Grid ColumnDefinitions="Auto,*,Auto,Auto,Auto"
-                  ColumnSpacing="12"
+                  ColumnSpacing="8"
                   VerticalOptions="Center">
                 <CheckBox Grid.Column="0"
                           IsChecked="{Binding IsPurchased}"
@@ -19,8 +22,9 @@
                 <Label Grid.Column="1"
                        Text="{Binding Name}"
                        FontAttributes="Bold"
-                       FontSize="16"
-                       VerticalOptions="Center">
+                       FontSize="14"
+                       VerticalOptions="Center"
+                       LineBreakMode="TailTruncation">
                     <Label.Triggers>
                         <DataTrigger TargetType="Label"
                                 Binding="{Binding IsPurchased}"
@@ -28,41 +32,47 @@
                             <Setter Property="TextDecorations"
                                     Value="Strikethrough"/>
                             <Setter Property="TextColor"
-                                    Value="Gray"/>
+                                    Value="{StaticResource TextMuted}"/>
                         </DataTrigger>
                     </Label.Triggers>
                 </Label>
 
                 <HorizontalStackLayout Grid.Column="2"
-                                       Spacing="4"
+                                       Spacing="0"
                                        VerticalOptions="Center">
                     <Button Text="-"
                             Command="{Binding DecreaseQuantityCommand}"
-                            WidthRequest="36"
-                            HeightRequest="36"
+                            Style="{StaticResource GhostButton}"
+                            WidthRequest="32"
+                            HeightRequest="32"
                             Padding="0"/>
-                    <Entry Text="{Binding Quantity, Mode=TwoWay}"
-                           WidthRequest="50"
+                    <Label Text="{Binding Quantity}"
+                           WidthRequest="30"
                            HorizontalTextAlignment="Center"
-                           Keyboard="Numeric"
-                           VerticalOptions="Center"/>
+                           VerticalTextAlignment="Center"/>
                     <Button Text="+"
                             Command="{Binding IncreaseQuantityCommand}"
-                            WidthRequest="36"
-                            HeightRequest="36"
+                            Style="{StaticResource GhostButton}"
+                            WidthRequest="32"
+                            HeightRequest="32"
                             Padding="0"/>
                 </HorizontalStackLayout>
 
-                <Picker Grid.Column="3"
-                        ItemsSource="{Binding AvailableUnits}"
-                        SelectedItem="{Binding Unit, Mode=TwoWay}"
-                        WidthRequest="100"
-                        VerticalOptions="Center"/>
+                <Label Grid.Column="3"
+                        Text="{Binding Unit}"
+                        TextColor="{StaticResource TextSecondary}"
+                        FontSize="12"
+                        VerticalOptions="Center"
+                        WidthRequest="40"/>
 
                 <Button Grid.Column="4"
-                        Text="Usuń"
+                        Text="x"
                         Command="{Binding DeleteProductCommand}"
-                        WidthRequest="60"/>
+                        Style="{StaticResource GhostButton}"
+                        TextColor="{StaticResource Danger}"
+                        WidthRequest="32"
+                        HeightRequest="32"
+                        Padding="0"/>
             </Grid>
 
             <!-- Store Selection Row -->
@@ -72,28 +82,16 @@
                 <Picker Grid.Column="0"
                         ItemsSource="{Binding AvailableStores}"
                         SelectedItem="{Binding StoreName, Mode=TwoWay}"
-                        Title="Wybierz sklep"/>
-                <HorizontalStackLayout Grid.Column="1"
-                                       Spacing="8"
-                                       VerticalOptions="End">
-                    <Button Text="Wyczyść"
-                            Style="{StaticResource SecondaryButton}"
-                            Command="{Binding ClearStoreCommand}"
-                            IsEnabled="{Binding StoreName, Converter={StaticResource StringNotNullOrEmptyConverter}}"
-                            WidthRequest="80"/>
-                    <Label Text="Opcjonalny"
-                           FontSize="12"
-                           TextColor="{DynamicResource Primary}"
-                           VerticalOptions="Center">
-                        <Label.Triggers>
-                            <DataTrigger TargetType="Label"
-                                    Binding="{Binding IsOptional}"
-                                    Value="False">
-                                <Setter Property="IsVisible"
-                                        Value="False"/>
-                            </DataTrigger>
-                        </Label.Triggers>
-                    </Label>
+                        Title="Wybierz sklep"
+                        FontSize="12"
+                        TextColor="{StaticResource TextPrimaryDark}"/>
+
+                <HorizontalStackLayout Grid.Column="1" Spacing="8" VerticalOptions="Center">
+                     <Label Text="Opcjonalny"
+                           FontSize="10"
+                           TextColor="{StaticResource TextMuted}"
+                           VerticalOptions="Center"
+                           IsVisible="{Binding IsOptional}"/>
                 </HorizontalStackLayout>
             </Grid>
         </VerticalStackLayout>

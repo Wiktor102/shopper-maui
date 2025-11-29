@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:ShopperMaui.ViewModels"
+             x:Class="ShopperMaui.Views.SettingsPage"
+             x:DataType="vm:SettingsViewModel"
+             Title="Ustawienia">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="16" Spacing="24">
+            
+            <VerticalStackLayout Spacing="8">
+                <Label Text="Zarządzanie" Style="{StaticResource SectionHeader}" />
+                
+                <Border Style="{StaticResource CardBorder}">
+                    <VerticalStackLayout Spacing="0">
+                        <Button Text="Kategorie"
+                                Command="{Binding ManageCategoriesCommand}"
+                                Style="{StaticResource GhostButton}"
+                                HorizontalOptions="Fill"/>
+                        
+                        <BoxView HeightRequest="1" Color="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray700}}" Margin="16,0" />
+                        
+                        <Button Text="Sklepy"
+                                Command="{Binding ManageStoresCommand}"
+                                Style="{StaticResource GhostButton}"
+                                HorizontalOptions="Fill"/>
+                    </VerticalStackLayout>
+                </Border>
+            </VerticalStackLayout>
+
+            <VerticalStackLayout Spacing="8">
+                <Label Text="Aplikacja" Style="{StaticResource SectionHeader}" />
+                <Border Style="{StaticResource CardBorder}">
+                    <VerticalStackLayout Spacing="12">
+                        <Label Text="ShopperMaui v1.0" 
+                               TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}"
+                               HorizontalOptions="Center" />
+                    </VerticalStackLayout>
+                </Border>
+            </VerticalStackLayout>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

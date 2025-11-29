@@ -5,22 +5,20 @@
              xmlns:controls="clr-namespace:ShopperMaui.Controls"
              x:Class="ShopperMaui.Controls.CategoryControl"
              x:DataType="vm:CategoryViewModel">
-    <Border StrokeThickness="1"
-            Stroke="{DynamicResource Primary}"
-            StrokeShape="RoundRectangle 12"
-            Padding="16"
+    <Border Style="{StaticResource CardBorder}"
             Margin="0,6">
         <VerticalStackLayout Spacing="12">
             <Grid ColumnDefinitions="Auto,*,Auto,Auto"
-                  ColumnSpacing="12"
+                  ColumnSpacing="8"
                   VerticalOptions="Center">
                 <Button Text="v"
                         Grid.Column="0"
                         BackgroundColor="Transparent"
-                        TextColor="{DynamicResource Primary}"
+                        TextColor="{StaticResource PrimaryLight}"
                         FontAttributes="Bold"
                         WidthRequest="36"
                         HeightRequest="36"
+                        Padding="0"
                         Command="{Binding ToggleExpandCommand}">
                     <Button.Triggers>
                         <DataTrigger TargetType="Button" Binding="{Binding IsExpanded}" Value="False">
@@ -29,25 +27,25 @@
                     </Button.Triggers>
                 </Button>
 
-                <VerticalStackLayout Grid.Column="1" Spacing="2">
+                <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
                     <Label Text="{Binding Name}"
-                           FontSize="18"
+                           FontSize="16"
                            FontAttributes="Bold"
                            LineBreakMode="TailTruncation" />
                     <Label Text="{Binding ProductSummary}"
                            FontSize="12"
-                           TextColor="{DynamicResource Secondary}" />
+                           TextColor="{StaticResource TextSecondary}" />
                 </VerticalStackLayout>
 
                 <Button Grid.Column="2"
-                    Text="Dodaj produkt"
+                    Text="+"
                     Command="{Binding AddProductCommand}"
+                    Style="{StaticResource GhostButton}"
+                    WidthRequest="44"
+                    HeightRequest="44"
+                    Padding="0"
+                    FontSize="20"
                     SemanticProperties.Description="Dodaj produkt" />
-
-                <Button Grid.Column="3"
-                        Text="Usuń"
-                        Command="{Binding DeleteCategoryCommand}"
-                        SemanticProperties.Description="Usuń kategorię" />
             </Grid>
 
             <CollectionView IsVisible="{Binding IsExpanded}"

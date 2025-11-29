@@ -6,9 +6,7 @@
              x:Class="ShopperMaui.Views.RecipesView"
              x:DataType="vm:RecipesViewModel"
              Title="Przepisy">
-    <VerticalStackLayout Padding="16" Spacing="12">
-        <Button Text="Dodaj przepis"
-                Command="{Binding AddRecipeCommand}" />
+    <Grid Padding="16" RowDefinitions="*,Auto">
         <CollectionView x:Name="RecipesCollection"
                         ItemsSource="{Binding Recipes}"
                         SelectionMode="None"
@@ -22,5 +20,10 @@
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
-    </VerticalStackLayout>
+        <Button Grid.Row="1"
+                Margin="0,12,0,0"
+                Text="Dodaj przepis"
+                Command="{Binding AddRecipeCommand}"
+                HorizontalOptions="Fill" />
+    </Grid>
 </ContentPage>

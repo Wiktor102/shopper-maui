@@ -7,38 +7,24 @@
              x:DataType="vm:MainViewModel"
              Title="Lista zakupów">
     <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Niezakupione"
+                     Command="{Binding NavigateToUnpurchasedViewCommand}" />
         <ToolbarItem Text="Eksportuj"
-                     Command="{Binding ExportListCommand}" />
+                     Command="{Binding ExportListCommand}"
+                     Order="Secondary"/>
         <ToolbarItem Text="Importuj"
-                     Command="{Binding ImportListCommand}" />
+                     Command="{Binding ImportListCommand}"
+                     Order="Secondary"/>
     </ContentPage.ToolbarItems>
 
-    <Grid Padding="16" RowDefinitions="Auto,Auto,*" RowSpacing="12">
+    <Grid Padding="16" RowDefinitions="Auto,*,Auto" RowSpacing="12">
         <VerticalStackLayout Grid.Row="0" Spacing="8">
-            <Label Text="{Binding Title}"
-                   FontSize="Title"
-                   FontAttributes="Bold" />
             <Label Text="{Binding ErrorMessage}"
-                   TextColor="Red"
+                   TextColor="{StaticResource Danger}"
                    IsVisible="{Binding ErrorMessage, Converter={StaticResource StringNotNullOrEmptyConverter}}" />
         </VerticalStackLayout>
 
-        <HorizontalStackLayout Grid.Row="1" Spacing="8">
-            <Button Text="Dodaj kategorię"
-                    Command="{Binding AddCategoryCommand}" />
-            <Button Text="Dodaj produkt"
-                Command="{Binding AddProductCommand}" />
-            <Button Text="Zarządzaj kategoriami"
-                    Command="{Binding ManageCategoriesCommand}" />
-                <Button Text="Zarządzaj sklepami"
-                    Command="{Binding ManageStoresCommand}" />
-            <Button Text="Niezakupione"
-                    Command="{Binding NavigateToUnpurchasedViewCommand}" />
-            <Button Text="Przepisy"
-                    Command="{Binding NavigateToRecipesCommand}" />
-        </HorizontalStackLayout>
-
-        <CollectionView Grid.Row="2"
+        <CollectionView Grid.Row="1"
                         ItemsSource="{Binding VisibleCategories}"
                         SelectionMode="None"
                         IsVisible="{Binding HasVisibleCategories}">
@@ -52,10 +38,8 @@
             </CollectionView.ItemTemplate>
         </CollectionView>
 
-        <Border Grid.Row="2"
-                Padding="24"
-                StrokeThickness="0"
-                BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray900}}"
+        <Border Grid.Row="1"
+                Style="{StaticResource CardBorder}"
                 HorizontalOptions="Fill"
                 VerticalOptions="Center"
                 IsVisible="{Binding HasVisibleCategories, Converter={StaticResource InverseBooleanConverter}}">
@@ -71,5 +55,15 @@
                        HorizontalTextAlignment="Center" />
             </VerticalStackLayout>
         </Border>
+
+        <Grid Grid.Row="2" ColumnDefinitions="*,*" ColumnSpacing="12">
+            <Button Grid.Column="0"
+                    Text="Dodaj kategorię"
+                    Command="{Binding AddCategoryCommand}"
+                    Style="{StaticResource SecondaryButton}"/>
+            <Button Grid.Column="1"
+                    Text="Dodaj produkt"
+                    Command="{Binding AddProductCommand}" />
+        </Grid>
     </Grid>
 </ContentPage>

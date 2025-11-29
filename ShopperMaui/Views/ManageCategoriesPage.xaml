@@ -8,10 +8,6 @@
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="Dodaj"
                      Command="{Binding AddCategoryCommand}" />
-        <ToolbarItem Text="Zamknij"
-                     Order="Primary"
-                     Priority="0"
-                     Command="{Binding CloseCommand}" />
     </ContentPage.ToolbarItems>
 
     <Grid Padding="16">
@@ -23,31 +19,31 @@
             </CollectionView.ItemsLayout>
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="vm:CategoryViewModel">
-                    <Border StrokeThickness="1"
-                            Stroke="{DynamicResource Primary}"
-                            StrokeShape="RoundRectangle 12"
-                            Padding="16">
+                    <Border Style="{StaticResource CardBorder}">
                         <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
-                            <VerticalStackLayout Spacing="6">
+                            <VerticalStackLayout Spacing="4" VerticalOptions="Center">
                                 <Entry Text="{Binding Name}"
                                        Placeholder="Nazwa kategorii"
-                                       FontAttributes="Bold" />
+                                       FontAttributes="Bold"
+                                       FontSize="16" />
                                 <Label Text="{Binding ProductSummary}"
                                        FontSize="12"
-                                       TextColor="{DynamicResource Secondary}" />
+                                       TextColor="{StaticResource TextSecondary}" />
                             </VerticalStackLayout>
                             <Button Grid.Column="1"
                                     Text="Usuń"
-                                    Command="{Binding DeleteCategoryCommand}" />
+                                    Command="{Binding DeleteCategoryCommand}"
+                                    Style="{StaticResource DangerButton}"
+                                    WidthRequest="80"
+                                    HeightRequest="36"
+                                    Padding="0"/>
                         </Grid>
                     </Border>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
 
-        <Border Padding="24"
-                StrokeThickness="0"
-                BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray900}}"
+        <Border Style="{StaticResource CardBorder}"
                 HorizontalOptions="Fill"
                 VerticalOptions="Center"
                 IsVisible="{Binding HasCategories, Converter={StaticResource InverseBooleanConverter}}">

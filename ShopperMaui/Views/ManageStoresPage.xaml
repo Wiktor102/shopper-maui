@@ -9,10 +9,6 @@
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="Dodaj"
                      Command="{Binding AddStoreCommand}" />
-        <ToolbarItem Text="Zamknij"
-                     Order="Primary"
-                     Priority="0"
-                     Command="{Binding CloseCommand}" />
     </ContentPage.ToolbarItems>
 
     <Grid Padding="16">
@@ -24,31 +20,33 @@
             </CollectionView.ItemsLayout>
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="x:String">
-                    <Border StrokeThickness="1"
-                            Stroke="{DynamicResource Primary}"
-                            StrokeShape="RoundRectangle 12"
-                            Padding="16">
-                        <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="12" VerticalOptions="Center">
+                    <Border Style="{StaticResource CardBorder}">
+                        <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8" VerticalOptions="Center">
                             <Label Text="{Binding .}"
                                    FontAttributes="Bold"
+                                   FontSize="16"
                                    VerticalOptions="Center" />
-                                <Button Grid.Column="1"
+                            <Button Grid.Column="1"
                                     Text="Zmień"
                                     Command="{Binding Source={x:Reference ManageStoresPageRoot}, Path=BindingContext.RenameStoreCommand}"
-                                    CommandParameter="{Binding .}" />
-                                <Button Grid.Column="2"
+                                    CommandParameter="{Binding .}"
+                                    Style="{StaticResource SecondaryButton}"
+                                    HeightRequest="36"
+                                    Padding="10,0"/>
+                            <Button Grid.Column="2"
                                     Text="Usuń"
                                     Command="{Binding Source={x:Reference ManageStoresPageRoot}, Path=BindingContext.DeleteStoreCommand}"
-                                    CommandParameter="{Binding .}" />
+                                    CommandParameter="{Binding .}"
+                                    Style="{StaticResource DangerButton}"
+                                    HeightRequest="36"
+                                    Padding="10,0"/>
                         </Grid>
                     </Border>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
 
-        <Border Padding="24"
-                StrokeThickness="0"
-                BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray900}}"
+        <Border Style="{StaticResource CardBorder}"
                 HorizontalOptions="Fill"
                 VerticalOptions="Center"
                 IsVisible="{Binding HasStores, Converter={StaticResource InverseBooleanConverter}}">

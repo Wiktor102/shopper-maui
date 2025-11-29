@@ -21,6 +21,7 @@ public partial class AppShell : Shell {
 		navigationService.RegisterRoute<RecipesViewModel>("//recipesTab");
 		navigationService.RegisterRoute<MainViewModel>("//shoppingList");
 		navigationService.RegisterRoute<StoreListViewModel>("//storeList");
+		navigationService.RegisterRoute<SettingsViewModel>("//settings");
 	}
 
 	private static void RegisterRoute<TViewModel, TPage>(INavigationService navigationService, string route)

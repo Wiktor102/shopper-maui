@@ -5,13 +5,18 @@
              x:Class="ShopperMaui.Views.AddCategoryPage"
              x:DataType="vm:AddCategoryViewModel"
              Title="Dodaj kategorię">
-    <VerticalStackLayout Padding="16" Spacing="12">
-        <Label Text="Nazwa kategorii" />
-        <Entry Text="{Binding CategoryName}" Placeholder="np. Nabiał" />
-        <Label Text="{Binding ErrorMessage}"
-               TextColor="Red"
-               IsVisible="{Binding ErrorMessage, Converter={StaticResource StringNotNullOrEmptyConverter}}" />
-        <Button Text="Zapisz" Command="{Binding SaveCategoryCommand}" />
-        <Button Text="Anuluj" Command="{Binding CancelCommand}" />
+    <VerticalStackLayout Padding="16" Spacing="24">
+        <VerticalStackLayout Spacing="8">
+            <Label Text="Nazwa kategorii" Style="{StaticResource SectionHeader}" Margin="0"/>
+            <Entry Text="{Binding CategoryName}" Placeholder="np. Nabiał" />
+            <Label Text="{Binding ErrorMessage}"
+                   TextColor="{StaticResource Danger}"
+                   IsVisible="{Binding ErrorMessage, Converter={StaticResource StringNotNullOrEmptyConverter}}" />
+        </VerticalStackLayout>
+
+        <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+            <Button Grid.Column="0" Text="Anuluj" Command="{Binding CancelCommand}" Style="{StaticResource SecondaryButton}" />
+            <Button Grid.Column="1" Text="Zapisz" Command="{Binding SaveCategoryCommand}" />
+        </Grid>
     </VerticalStackLayout>
 </ContentPage>

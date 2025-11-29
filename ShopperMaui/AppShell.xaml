@@ -12,13 +12,17 @@
             Route="shoppingList"
             ContentTemplate="{DataTemplate views:ShoppingListView}" />
         <ShellContent
+            Title="Przepisy"
+            Route="recipesTab"
+            ContentTemplate="{DataTemplate views:RecipesView}" />
+        <ShellContent
             Title="Sklepy"
             Route="storeList"
             ContentTemplate="{DataTemplate views:StoreListView}" />
         <ShellContent
-            Title="Przepisy"
-            Route="recipesTab"
-            ContentTemplate="{DataTemplate views:RecipesView}" />
+            Title="Ustawienia"
+            Route="settings"
+            ContentTemplate="{DataTemplate views:SettingsPage}" />
     </TabBar>
 
 </Shell>

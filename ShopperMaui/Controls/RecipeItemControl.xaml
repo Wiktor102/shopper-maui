@@ -3,29 +3,35 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ShopperMaui.Controls.RecipeItemControl"
              x:Name="Root">
-    <Border StrokeThickness="1"
-            Stroke="{DynamicResource Secondary}"
-            Padding="12"
-            Margin="0,8"
-            StrokeShape="RoundRectangle 12">
-        <VerticalStackLayout Spacing="8">
+    <Border Style="{StaticResource CardBorder}" Margin="0,8">
+        <VerticalStackLayout Spacing="12">
+            <VerticalStackLayout Spacing="4">
                 <Label Text="{Binding Recipe.Name, Source={x:Reference Root}}"
-                   FontSize="18"
-                   FontAttributes="Bold" />
+                       FontSize="18"
+                       FontAttributes="Bold" />
                 <Label Text="{Binding Recipe.Description, Source={x:Reference Root}}"
-                   TextColor="Gray"
-                   LineBreakMode="WordWrap" />
-            <HorizontalStackLayout Spacing="8">
-                <Button Text="Dodaj do listy"
-                    Command="{Binding AddCommand, Source={x:Reference Root}}"
-                    CommandParameter="{Binding Recipe, Source={x:Reference Root}}" />
-                <Button Text="Edytuj"
-                    Command="{Binding EditCommand, Source={x:Reference Root}}"
-                    CommandParameter="{Binding Recipe, Source={x:Reference Root}}" />
-                <Button Text="Usuń"
-                    Command="{Binding DeleteCommand, Source={x:Reference Root}}"
-                    CommandParameter="{Binding Recipe, Source={x:Reference Root}}" />
-            </HorizontalStackLayout>
+                       TextColor="{StaticResource TextSecondary}"
+                       LineBreakMode="WordWrap" />
+            </VerticalStackLayout>
+
+            <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8">
+                <Button Grid.Column="0"
+                        Text="Dodaj do listy"
+                        Command="{Binding AddCommand, Source={x:Reference Root}}"
+                        CommandParameter="{Binding Recipe, Source={x:Reference Root}}"
+                        Style="{StaticResource SecondaryButton}" />
+                <Button Grid.Column="1"
+                        Text="Edytuj"
+                        Command="{Binding EditCommand, Source={x:Reference Root}}"
+                        CommandParameter="{Binding Recipe, Source={x:Reference Root}}"
+                        Style="{StaticResource GhostButton}" />
+                <Button Grid.Column="2"
+                        Text="Usuń"
+                        Command="{Binding DeleteCommand, Source={x:Reference Root}}"
+                        CommandParameter="{Binding Recipe, Source={x:Reference Root}}"
+                        Style="{StaticResource GhostButton}"
+                        TextColor="{StaticResource Danger}" />
+            </Grid>
         </VerticalStackLayout>
     </Border>
 </ContentView>

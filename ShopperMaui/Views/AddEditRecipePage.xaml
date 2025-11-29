@@ -6,46 +6,60 @@
              x:DataType="vm:AddEditRecipeViewModel"
              Title="Przepis">
     <ScrollView>
-        <VerticalStackLayout Padding="16" Spacing="12">
-            <Entry Text="{Binding RecipeName}" Placeholder="Nazwa przepisu" />
-            <Editor Text="{Binding RecipeDescription}" Placeholder="Opis" AutoSize="TextChanges" />
+        <VerticalStackLayout Padding="16" Spacing="24">
+            <VerticalStackLayout Spacing="8">
+                <Label Text="Nazwa przepisu" Style="{StaticResource SectionHeader}" Margin="0"/>
+                <Entry Text="{Binding RecipeName}" Placeholder="Nazwa przepisu" />
+            </VerticalStackLayout>
+            
+            <VerticalStackLayout Spacing="8">
+                <Label Text="Opis" Style="{StaticResource SectionHeader}" Margin="0"/>
+                <Editor Text="{Binding RecipeDescription}" Placeholder="Opis" AutoSize="TextChanges" />
+            </VerticalStackLayout>
 
-            <Label Text="Składniki" FontAttributes="Bold" />
-            <CollectionView x:Name="IngredientsCollection"
-                            ItemsSource="{Binding Ingredients}"
-                            SelectionMode="None">
-                <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="vm:RecipeIngredientViewModel">
-                        <Frame BorderColor="{DynamicResource Secondary}"
-                               Padding="12"
-                               Margin="0,8,0,0">
-                            <VerticalStackLayout Spacing="6">
-                                <Entry Text="{Binding ProductName}" Placeholder="Nazwa składnika" />
-                                <HorizontalStackLayout Spacing="8">
-                                    <Entry Text="{Binding Quantity}" WidthRequest="80" Keyboard="Numeric" />
-                                    <Picker ItemsSource="{Binding AvailableUnits}"
-                                            SelectedItem="{Binding Unit}"
-                                            WidthRequest="120" />
-                                </HorizontalStackLayout>
-                                <Entry Text="{Binding CategoryName}" Placeholder="Kategoria" />
-                                <Button Text="Usuń"
-                                        Command="{Binding BindingContext.RemoveIngredientCommand, Source={x:Reference IngredientsCollection}}"
-                                        CommandParameter="{Binding .}" />
-                            </VerticalStackLayout>
-                        </Frame>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
+            <VerticalStackLayout Spacing="8">
+                <Label Text="Składniki" Style="{StaticResource SectionHeader}" Margin="0"/>
+                <CollectionView x:Name="IngredientsCollection"
+                                ItemsSource="{Binding Ingredients}"
+                                SelectionMode="None">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="vm:RecipeIngredientViewModel">
+                            <Border Style="{StaticResource CardBorder}" Margin="0,0,0,8">
+                                <VerticalStackLayout Spacing="6">
+                                    <Entry Text="{Binding ProductName}" Placeholder="Nazwa składnika" />
+                                    <HorizontalStackLayout Spacing="8">
+                                        <Entry Text="{Binding Quantity}" WidthRequest="80" Keyboard="Numeric" />
+                                        <Picker ItemsSource="{Binding AvailableUnits}"
+                                                SelectedItem="{Binding Unit}"
+                                                WidthRequest="120" />
+                                    </HorizontalStackLayout>
+                                    <Entry Text="{Binding CategoryName}" Placeholder="Kategoria" />
+                                    <Button Text="Usuń"
+                                            Command="{Binding BindingContext.RemoveIngredientCommand, Source={x:Reference IngredientsCollection}}"
+                                            CommandParameter="{Binding .}"
+                                            Style="{StaticResource DangerButton}"
+                                            HorizontalOptions="End"
+                                            HeightRequest="36"
+                                            Padding="12,0"/>
+                                </VerticalStackLayout>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
 
-            <Button Text="Dodaj składnik"
-                    Command="{Binding AddIngredientCommand}" />
+                <Button Text="Dodaj składnik"
+                        Command="{Binding AddIngredientCommand}"
+                        Style="{StaticResource SecondaryButton}" />
+            </VerticalStackLayout>
 
             <Label Text="{Binding ErrorMessage}"
-                   TextColor="Red"
+                   TextColor="{StaticResource Danger}"
                    IsVisible="{Binding ErrorMessage, Converter={StaticResource StringNotNullOrEmptyConverter}}" />
 
-            <Button Text="Zapisz" Command="{Binding SaveRecipeCommand}" />
-            <Button Text="Anuluj" Command="{Binding CancelCommand}" />
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="12" Margin="0,24,0,0">
+                <Button Grid.Column="0" Text="Anuluj" Command="{Binding CancelCommand}" Style="{StaticResource SecondaryButton}" />
+                <Button Grid.Column="1" Text="Zapisz" Command="{Binding SaveRecipeCommand}" />
+            </Grid>
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

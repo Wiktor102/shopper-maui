@@ -6,39 +6,48 @@
              x:DataType="vm:AddProductViewModel"
              Title="Dodaj produkt">
     <ScrollView>
-        <VerticalStackLayout Padding="16" Spacing="12">
-            <Label Text="Nazwa produktu" />
-            <Entry Text="{Binding ProductName}" Placeholder="np. Mleko" />
+        <VerticalStackLayout Padding="16" Spacing="24">
+            <VerticalStackLayout Spacing="8">
+                <Label Text="Nazwa produktu" Style="{StaticResource SectionHeader}" Margin="0"/>
+                <Entry Text="{Binding ProductName}" Placeholder="np. Mleko" />
+            </VerticalStackLayout>
 
-            <Label Text="Kategoria" />
-            <Picker ItemsSource="{Binding AvailableCategories}"
-                    ItemDisplayBinding="{Binding Name}"
-                    SelectedItem="{Binding SelectedCategory}" />
+            <VerticalStackLayout Spacing="8">
+                <Label Text="Kategoria" Style="{StaticResource SectionHeader}" Margin="0"/>
+                <Picker ItemsSource="{Binding AvailableCategories}"
+                        ItemDisplayBinding="{Binding Name}"
+                        SelectedItem="{Binding SelectedCategory}" />
+            </VerticalStackLayout>
 
-            <Label Text="Ilość" />
-            <HorizontalStackLayout Spacing="8">
-                <Button Text="-" Command="{Binding DecreaseQuantityCommand}" WidthRequest="40" />
-                <Entry Text="{Binding Quantity}" Keyboard="Numeric" HorizontalTextAlignment="Center" WidthRequest="80" />
-                <Button Text="+" Command="{Binding IncreaseQuantityCommand}" WidthRequest="40" />
-                <Picker ItemsSource="{Binding AvailableUnits}"
-                        SelectedItem="{Binding SelectedUnit}" WidthRequest="120" />
-            </HorizontalStackLayout>
-
-                <Label Text="Sklep" />
+            <VerticalStackLayout Spacing="8">
+                <Label Text="Ilość" Style="{StaticResource SectionHeader}" Margin="0"/>
                 <HorizontalStackLayout Spacing="8">
-                <Picker ItemsSource="{Binding AvailableStores}"
-                    Title="Wybierz sklep"
-                    SelectedItem="{Binding StoreName}"
-                    IsEnabled="{Binding HasStores}"
-                    WidthRequest="220" />
-                <Button Text="Wyczyść"
-                    Command="{Binding ClearStoreSelectionCommand}"
-                    IsEnabled="{Binding StoreName, Converter={StaticResource StringNotNullOrEmptyConverter}}" />
+                    <Button Text="-" Command="{Binding DecreaseQuantityCommand}" Style="{StaticResource GhostButton}" WidthRequest="44" />
+                    <Entry Text="{Binding Quantity}" Keyboard="Numeric" HorizontalTextAlignment="Center" WidthRequest="80" />
+                    <Button Text="+" Command="{Binding IncreaseQuantityCommand}" Style="{StaticResource GhostButton}" WidthRequest="44" />
+                    <Picker ItemsSource="{Binding AvailableUnits}"
+                            SelectedItem="{Binding SelectedUnit}" WidthRequest="120" />
+                </HorizontalStackLayout>
+            </VerticalStackLayout>
+
+            <VerticalStackLayout Spacing="8">
+                <Label Text="Sklep" Style="{StaticResource SectionHeader}" Margin="0"/>
+                <HorizontalStackLayout Spacing="8">
+                    <Picker ItemsSource="{Binding AvailableStores}"
+                        Title="Wybierz sklep"
+                        SelectedItem="{Binding StoreName}"
+                        IsEnabled="{Binding HasStores}"
+                        HorizontalOptions="FillAndExpand" />
+                    <Button Text="Wyczyść"
+                        Command="{Binding ClearStoreSelectionCommand}"
+                        Style="{StaticResource GhostButton}"
+                        IsEnabled="{Binding StoreName, Converter={StaticResource StringNotNullOrEmptyConverter}}" />
                 </HorizontalStackLayout>
                 <Label Text="Dodaj sklepy z poziomu głównej listy (Zarządzaj sklepami)."
                    FontSize="12"
-                   TextColor="{DynamicResource Secondary}"
+                   TextColor="{StaticResource TextSecondary}"
                    IsVisible="{Binding HasStores, Converter={StaticResource InverseBooleanConverter}}" />
+            </VerticalStackLayout>
 
             <HorizontalStackLayout Spacing="8" VerticalOptions="Center">
                 <Label Text="Opcjonalny" VerticalOptions="Center" />
@@ -46,11 +55,13 @@
             </HorizontalStackLayout>
 
             <Label Text="{Binding ErrorMessage}"
-                   TextColor="Red"
+                   TextColor="{StaticResource Danger}"
                    IsVisible="{Binding ErrorMessage, Converter={StaticResource StringNotNullOrEmptyConverter}}" />
 
-            <Button Text="Zapisz" Command="{Binding SaveProductCommand}" />
-            <Button Text="Anuluj" Command="{Binding CancelCommand}" />
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="12" Margin="0,24,0,0">
+                <Button Grid.Column="0" Text="Anuluj" Command="{Binding CancelCommand}" Style="{StaticResource SecondaryButton}" />
+                <Button Grid.Column="1" Text="Zapisz" Command="{Binding SaveProductCommand}" />
+            </Grid>
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>
