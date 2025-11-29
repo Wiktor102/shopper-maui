@@ -131,12 +131,8 @@ public class CategoryViewModel : BaseViewModel
             product,
             this,
             _dialogService,
-            _ => _ = _mainViewModel.SaveAsync(),
-            _ =>
-            {
-                RefreshProductOrdering();
-                _ = _mainViewModel.SaveAsync();
-            },
+            productViewModel => _mainViewModel.HandleProductChangedAsync(productViewModel),
+            productViewModel => _mainViewModel.HandleProductChangedAsync(productViewModel),
             productViewModel => _mainViewModel.DeleteProductAsync(productViewModel));
 
     private async Task DeleteCategoryAsync()

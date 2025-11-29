@@ -13,8 +13,8 @@ public class ProductViewModel : BaseViewModel
     private readonly Product _model;
     private readonly CategoryViewModel _category;
     private readonly IDialogService _dialogService;
-    private readonly Action<ProductViewModel>? _onChanged;
-    private readonly Action<ProductViewModel>? _onPurchasedChanged;
+    private readonly Func<ProductViewModel, Task>? _onChanged;
+    private readonly Func<ProductViewModel, Task>? _onPurchasedChanged;
     private readonly Func<ProductViewModel, Task>? _onDelete;
 
     private string _name;
@@ -28,8 +28,8 @@ public class ProductViewModel : BaseViewModel
         Product model,
         CategoryViewModel category,
         IDialogService dialogService,
-        Action<ProductViewModel>? onChanged,
-        Action<ProductViewModel>? onPurchasedChanged,
+        Func<ProductViewModel, Task>? onChanged,
+        Func<ProductViewModel, Task>? onPurchasedChanged,
         Func<ProductViewModel, Task>? onDelete)
     {
         _model = model;
@@ -67,7 +67,7 @@ public class ProductViewModel : BaseViewModel
             if (SetProperty(ref _name, value))
             {
                 _model.Name = value;
-                NotifyChanged();
+                _ = NotifyChangedAsync();
             }
         }
     }
@@ -80,7 +80,7 @@ public class ProductViewModel : BaseViewModel
             if (SetProperty(ref _quantity, value))
             {
                 _model.Quantity = value;
-                NotifyChanged();
+                _ = NotifyChangedAsync();
                 DecreaseQuantityCommand.RaiseCanExecuteChanged();
             }
         }
@@ -94,7 +94,7 @@ public class ProductViewModel : BaseViewModel
             if (SetProperty(ref _unit, value))
             {
                 _model.Unit = value;
-                NotifyChanged();
+                _ = NotifyChangedAsync();
             }
         }
     }
@@ -107,7 +107,7 @@ public class ProductViewModel : BaseViewModel
             if (SetProperty(ref _isPurchased, value))
             {
                 _model.IsPurchased = value;
-                NotifyPurchasedChanged();
+                _ = NotifyPurchasedChangedAsync();
             }
         }
     }
@@ -120,7 +120,7 @@ public class ProductViewModel : BaseViewModel
             if (SetProperty(ref _isOptional, value))
             {
                 _model.IsOptional = value;
-                NotifyChanged();
+                _ = NotifyChangedAsync();
             }
         }
     }
@@ -133,7 +133,7 @@ public class ProductViewModel : BaseViewModel
             if (SetProperty(ref _storeName, value))
             {
                 _model.StoreName = value;
-                NotifyChanged();
+                _ = NotifyChangedAsync();
             }
         }
     }
@@ -184,7 +184,7 @@ public class ProductViewModel : BaseViewModel
         }
     }
 
-    private void NotifyChanged() => _onChanged?.Invoke(this);
+    private Task NotifyChangedAsync() => _onChanged?.Invoke(this) ?? Task.CompletedTask;
 
-    private void NotifyPurchasedChanged() => _onPurchasedChanged?.Invoke(this);
+    private Task NotifyPurchasedChangedAsync() => _onPurchasedChanged?.Invoke(this) ?? Task.CompletedTask;
 }
