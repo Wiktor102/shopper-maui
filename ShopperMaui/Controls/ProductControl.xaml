@@ -52,11 +52,11 @@
                     Text="Usuń"
                     Command="{Binding DeleteProductCommand}" />
 
-            <Label Grid.Row="1"
-                   Grid.Column="1"
-                   Text="{Binding StoreName, StringFormat='Sklep: {0}'}"
-                   TextColor="Gray"
-                   FontSize="12" />
+                 <Entry Grid.Row="1"
+                     Grid.Column="1"
+                     Text="{Binding StoreName}"
+                     Placeholder="Sklep"
+                     FontSize="12" />
 
             <Label Grid.Row="1"
                    Grid.Column="2"
@@ -70,11 +70,11 @@
                 </Label.Triggers>
             </Label>
 
-            <Picker Grid.Row="1"
+                <Picker Grid.Row="1"
                     Grid.Column="3"
                     ItemsSource="{Binding AvailableStores}"
                     SelectedItem="{Binding StoreName, Mode=TwoWay}"
-                    Title="Sklep"
+                    Title="Lista sklepów"
                     WidthRequest="120" />
         </Grid>
 

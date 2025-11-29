@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:ShopperMaui.ViewModels"
+             xmlns:controls="clr-namespace:ShopperMaui.Controls"
+             x:Class="ShopperMaui.Views.StoreListView"
+             x:DataType="vm:StoreListViewModel"
+             Title="Widok sklepu">
+    <VerticalStackLayout Padding="16" Spacing="12">
+        <Label Text="Filtruj po sklepie"
+               FontAttributes="Bold" />
+        <Picker ItemsSource="{Binding AvailableStores}"
+                SelectedItem="{Binding SelectedStore}"
+                Title="Sklep" />
+
+        <Label Text="Sortuj po" FontAttributes="Bold" />
+        <HorizontalStackLayout Spacing="8">
+            <Button Text="Kategoria" Command="{Binding SortByCategoryCommand}" />
+            <Button Text="Nazwa" Command="{Binding SortByNameCommand}" />
+            <Button Text="Ilość" Command="{Binding SortByQuantityCommand}" />
+        </HorizontalStackLayout>
+
+        <CollectionView ItemsSource="{Binding FilteredProducts}"
+                        SelectionMode="None"
+                        EmptyView="Brak produktów dla wybranego sklepu.">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <controls:ProductControl />
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </VerticalStackLayout>
+</ContentPage>

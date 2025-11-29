@@ -3,12 +3,22 @@
     x:Class="ShopperMaui.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:ShopperMaui"
+    xmlns:views="clr-namespace:ShopperMaui.Views"
     Title="ShopperMaui">
 
-    <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
+    <TabBar>
+        <ShellContent
+            Title="Lista"
+            Route="shoppingList"
+            ContentTemplate="{DataTemplate views:ShoppingListView}" />
+        <ShellContent
+            Title="Sklepy"
+            Route="storeList"
+            ContentTemplate="{DataTemplate views:StoreListView}" />
+        <ShellContent
+            Title="Przepisy"
+            Route="recipesTab"
+            ContentTemplate="{DataTemplate views:RecipesView}" />
+    </TabBar>
 
 </Shell>

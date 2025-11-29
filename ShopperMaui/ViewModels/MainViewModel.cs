@@ -20,6 +20,7 @@ public class MainViewModel : BaseViewModel
     private readonly IDialogService _dialogService;
     private ShoppingList _currentShoppingList = new();
     private bool _isInitialized;
+    private readonly object _syncRoot = new();
 
     public MainViewModel(IDataService dataService, INavigationService navigationService, IDialogService dialogService)
     {
@@ -37,6 +38,8 @@ public class MainViewModel : BaseViewModel
         ExportListCommand = new AsyncRelayCommand(ExportListAsync, () => !IsBusy, busy => IsBusy = busy);
         ImportListCommand = new AsyncRelayCommand(ImportListAsync, () => !IsBusy, busy => IsBusy = busy);
     }
+
+    public event EventHandler? ShoppingListUpdated;
 
     public ObservableCollection<CategoryViewModel> Categories { get; }
 
@@ -101,14 +104,58 @@ public class MainViewModel : BaseViewModel
 
     internal async Task SaveAsync()
     {
-        foreach (var (category, index) in Categories.Select((category, index) => (category, index)))
+        lock (_syncRoot)
         {
-            category.UpdateSortOrder(index);
-            category.SyncModel();
+            foreach (var (category, index) in Categories.Select((category, index) => (category, index)))
+            {
+                category.UpdateSortOrder(index);
+                category.SyncModel();
+            }
+
+            CurrentShoppingList.LastModified = DateTime.UtcNow;
         }
 
-        CurrentShoppingList.LastModified = DateTime.UtcNow;
         await _dataService.SaveShoppingListAsync(CurrentShoppingList);
+        OnShoppingListUpdated();
+    }
+
+    public IEnumerable<ProductViewModel> GetAllProducts()
+        => Categories.SelectMany(c => c.Products).ToList();
+
+    public bool CategoryExists(string categoryName)
+        => Categories.Any(c => string.Equals(c.Name, categoryName, StringComparison.OrdinalIgnoreCase));
+
+    public async Task<bool> AddCategoryAsync(string categoryName)
+    {
+        if (string.IsNullOrWhiteSpace(categoryName) || CategoryExists(categoryName))
+        {
+            return false;
+        }
+
+        var newCategory = new Category
+        {
+            Name = categoryName.Trim(),
+            SortOrder = Categories.Count
+        };
+
+        CurrentShoppingList.Categories.Add(newCategory);
+        var categoryViewModel = new CategoryViewModel(newCategory, this, _dialogService);
+        Categories.Add(categoryViewModel);
+        await SaveAsync();
+        return true;
+    }
+
+    public async Task<bool> AddProductAsync(Guid categoryId, Product product)
+    {
+        var categoryViewModel = Categories.FirstOrDefault(c => c.Model.Id == categoryId);
+        if (categoryViewModel is null)
+        {
+            return false;
+        }
+
+        categoryViewModel.AddProduct(product);
+        await SaveAsync();
+        return true;
     }
 
     internal Task NavigateToAddProductAsync(CategoryViewModel category)
@@ -150,6 +197,7 @@ public class MainViewModel : BaseViewModel
         }
 
         Categories.CollectionChanged += OnCategoriesChanged;
+        OnShoppingListUpdated();
     }
 
     private void OnCategoriesChanged(object? sender, NotifyCollectionChangedEventArgs e)
@@ -188,4 +236,7 @@ public class MainViewModel : BaseViewModel
 
     private Task NavigateToRecipesAsync()
         => _navigationService.NavigateToAsync<RecipesViewModel>();
+
+    private void OnShoppingListUpdated()
+        => ShoppingListUpdated?.Invoke(this, EventArgs.Empty);
 }

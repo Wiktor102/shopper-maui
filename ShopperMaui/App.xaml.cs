@@ -1,15 +1,15 @@
-﻿namespace ShopperMaui
-{
-    public partial class App : Application
-    {
-        public App()
-        {
-            InitializeComponent();
-        }
+﻿namespace ShopperMaui;
 
-        protected override Window CreateWindow(IActivationState? activationState)
-        {
-            return new Window(new AppShell());
-        }
+public partial class App : Application
+{
+    private readonly AppShell _appShell;
+
+    public App(AppShell appShell)
+    {
+        InitializeComponent();
+        _appShell = appShell;
     }
+
+    protected override Window CreateWindow(IActivationState? activationState)
+        => new Window(_appShell);
 }

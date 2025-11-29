@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:ShopperMaui.ViewModels"
+             xmlns:controls="clr-namespace:ShopperMaui.Controls"
+             x:Class="ShopperMaui.Views.UnpurchasedListView"
+             x:DataType="vm:UnpurchasedListViewModel"
+             Title="Niezakupione">
+    <VerticalStackLayout Padding="16" Spacing="12">
+        <Label Text="Sortuj po" FontAttributes="Bold" />
+        <HorizontalStackLayout Spacing="8">
+            <Button Text="Kategoria" Command="{Binding SortByCategoryCommand}" />
+            <Button Text="Nazwa" Command="{Binding SortByNameCommand}" />
+            <Button Text="Ilość" Command="{Binding SortByQuantityCommand}" />
+        </HorizontalStackLayout>
+
+        <CollectionView ItemsSource="{Binding UnpurchasedProducts}"
+                        EmptyView="Wszystkie produkty zostały kupione!"
+                        SelectionMode="None">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <controls:ProductControl />
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </VerticalStackLayout>
+</ContentPage>

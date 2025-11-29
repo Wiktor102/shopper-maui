@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:ShopperMaui.ViewModels"
+             x:Class="ShopperMaui.Views.AddProductPage"
+             x:DataType="vm:AddProductViewModel"
+             Title="Dodaj produkt">
+    <ScrollView>
+        <VerticalStackLayout Padding="16" Spacing="12">
+            <Label Text="Nazwa produktu" />
+            <Entry Text="{Binding ProductName}" Placeholder="np. Mleko" />
+
+            <Label Text="Kategoria" />
+            <Picker ItemsSource="{Binding AvailableCategories}"
+                    ItemDisplayBinding="{Binding Name}"
+                    SelectedItem="{Binding SelectedCategory}" />
+
+            <Label Text="Ilość" />
+            <HorizontalStackLayout Spacing="8">
+                <Button Text="-" Command="{Binding DecreaseQuantityCommand}" WidthRequest="40" />
+                <Entry Text="{Binding Quantity}" Keyboard="Numeric" HorizontalTextAlignment="Center" WidthRequest="80" />
+                <Button Text="+" Command="{Binding IncreaseQuantityCommand}" WidthRequest="40" />
+                <Picker ItemsSource="{Binding AvailableUnits}"
+                        SelectedItem="{Binding SelectedUnit}" WidthRequest="120" />
+            </HorizontalStackLayout>
+
+            <Label Text="Sklep" />
+            <Entry Text="{Binding StoreName}" Placeholder="np. Biedronka" />
+            <Picker ItemsSource="{Binding AvailableStores}"
+                    Title="Popularne sklepy"
+                    SelectedItem="{Binding SelectedStoreSuggestion}" />
+
+            <HorizontalStackLayout Spacing="8" VerticalOptions="Center">
+                <Label Text="Opcjonalny" VerticalOptions="Center" />
+                <Switch IsToggled="{Binding IsOptional}" />
+            </HorizontalStackLayout>
+
+            <Label Text="{Binding ErrorMessage}"
+                   TextColor="Red"
+                   IsVisible="{Binding ErrorMessage, Converter={StaticResource StringNotNullOrEmptyConverter}}" />
+
+            <Button Text="Zapisz" Command="{Binding SaveProductCommand}" />
+            <Button Text="Anuluj" Command="{Binding CancelCommand}" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

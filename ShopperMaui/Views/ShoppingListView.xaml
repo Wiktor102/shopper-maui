@@ -19,19 +19,14 @@
                    FontSize="Title"
                    FontAttributes="Bold" />
             <Label Text="{Binding ErrorMessage}"
-                   TextColor="Red">
-                <Label.Triggers>
-                    <DataTrigger TargetType="Label" Binding="{Binding ErrorMessage}" Value="">
-                        <Setter Property="IsVisible" Value="False" />
-                    </DataTrigger>
-                </Label.Triggers>
-            </Label>
+                   TextColor="Red"
+                   IsVisible="{Binding ErrorMessage, Converter={StaticResource StringNotNullOrEmptyConverter}}" />
         </VerticalStackLayout>
 
         <HorizontalStackLayout Grid.Row="1" Spacing="8">
             <Button Text="Dodaj kategorię"
                     Command="{Binding AddCategoryCommand}" />
-            <Button Text="Niepurchasowane"
+                <Button Text="Niezakupione"
                     Command="{Binding NavigateToUnpurchasedViewCommand}" />
             <Button Text="Przepisy"
                     Command="{Binding NavigateToRecipesCommand}" />

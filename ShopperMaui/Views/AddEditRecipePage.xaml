@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:ShopperMaui.ViewModels"
+             x:Class="ShopperMaui.Views.AddEditRecipePage"
+             x:DataType="vm:AddEditRecipeViewModel"
+             Title="Przepis">
+    <ScrollView>
+        <VerticalStackLayout Padding="16" Spacing="12">
+            <Entry Text="{Binding RecipeName}" Placeholder="Nazwa przepisu" />
+            <Editor Text="{Binding RecipeDescription}" Placeholder="Opis" AutoSize="TextChanges" />
+
+            <Label Text="Składniki" FontAttributes="Bold" />
+            <CollectionView x:Name="IngredientsCollection"
+                            ItemsSource="{Binding Ingredients}"
+                            SelectionMode="None">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="vm:RecipeIngredientViewModel">
+                        <Frame BorderColor="{DynamicResource Secondary}"
+                               Padding="12"
+                               Margin="0,8,0,0">
+                            <VerticalStackLayout Spacing="6">
+                                <Entry Text="{Binding ProductName}" Placeholder="Nazwa składnika" />
+                                <HorizontalStackLayout Spacing="8">
+                                    <Entry Text="{Binding Quantity}" WidthRequest="80" Keyboard="Numeric" />
+                                    <Picker ItemsSource="{Binding AvailableUnits}"
+                                            SelectedItem="{Binding Unit}"
+                                            WidthRequest="120" />
+                                </HorizontalStackLayout>
+                                <Entry Text="{Binding CategoryName}" Placeholder="Kategoria" />
+                                <Button Text="Usuń"
+                                        Command="{Binding BindingContext.RemoveIngredientCommand, Source={x:Reference IngredientsCollection}}"
+                                        CommandParameter="{Binding .}" />
+                            </VerticalStackLayout>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <Button Text="Dodaj składnik"
+                    Command="{Binding AddIngredientCommand}" />
+
+            <Label Text="{Binding ErrorMessage}"
+                   TextColor="Red"
+                   IsVisible="{Binding ErrorMessage, Converter={StaticResource StringNotNullOrEmptyConverter}}" />
+
+            <Button Text="Zapisz" Command="{Binding SaveRecipeCommand}" />
+            <Button Text="Anuluj" Command="{Binding CancelCommand}" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

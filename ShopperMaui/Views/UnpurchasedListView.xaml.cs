@@ -4,14 +4,14 @@ using ShopperMaui.ViewModels;
 
 namespace ShopperMaui.Views;
 
-public partial class ShoppingListView : ContentPage
+public partial class UnpurchasedListView : ContentPage
 {
-    private MainViewModel ViewModel => (MainViewModel)BindingContext;
+    private UnpurchasedListViewModel ViewModel => (UnpurchasedListViewModel)BindingContext;
 
-    public ShoppingListView()
+    public UnpurchasedListView()
     {
         InitializeComponent();
-        BindingContext = ServiceHelper.GetService<MainViewModel>();
+        BindingContext = ServiceHelper.GetService<UnpurchasedListViewModel>();
     }
 
     protected override async void OnAppearing()
