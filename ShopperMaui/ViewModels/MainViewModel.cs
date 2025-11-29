@@ -4,6 +4,7 @@ using ShopperMaui.Services;
 using ShopperMaui.ViewModels.Commands;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Linq;
 
 namespace ShopperMaui.ViewModels;
 
@@ -27,6 +28,8 @@ public class MainViewModel : BaseViewModel {
 		AddCategoryCommand = new RelayCommand(() => _ = NavigateToAddCategoryAsync());
 		NavigateToUnpurchasedViewCommand = new RelayCommand(() => _ = NavigateToUnpurchasedViewAsync());
 		NavigateToRecipesCommand = new RelayCommand(() => _ = NavigateToRecipesAsync());
+		ManageCategoriesCommand = new RelayCommand(() => _ = NavigateToManageCategoriesAsync());
+		AddProductCommand = new AsyncRelayCommand(NavigateToAddProductAsync, () => !IsBusy, busy => IsBusy = busy);
 		ExportListCommand = new AsyncRelayCommand(ExportListAsync, () => !IsBusy, busy => IsBusy = busy);
 		ImportListCommand = new AsyncRelayCommand(ImportListAsync, () => !IsBusy, busy => IsBusy = busy);
 	}
@@ -34,6 +37,10 @@ public class MainViewModel : BaseViewModel {
 	public event EventHandler? ShoppingListUpdated;
 
 	public ObservableCollection<CategoryViewModel> Categories { get; }
+
+	public ObservableCollection<CategoryViewModel> VisibleCategories { get; } = new();
+
+	public bool HasVisibleCategories => VisibleCategories.Any();
 
 	public ShoppingList CurrentShoppingList {
 		get => _currentShoppingList;
@@ -45,6 +52,10 @@ public class MainViewModel : BaseViewModel {
 	public RelayCommand NavigateToUnpurchasedViewCommand { get; }
 
 	public RelayCommand NavigateToRecipesCommand { get; }
+
+	public RelayCommand ManageCategoriesCommand { get; }
+
+	public AsyncRelayCommand AddProductCommand { get; }
 
 	public AsyncRelayCommand ExportListCommand { get; }
 
@@ -135,6 +146,15 @@ public class MainViewModel : BaseViewModel {
 			["categoryId"] = category.Model.Id
 		});
 
+	private async Task NavigateToAddProductAsync() {
+		if (!Categories.Any()) {
+			await _dialogService.ShowAlertAsync("Brak kategorii", "Dodaj kategorię, aby móc dodać produkt.");
+			return;
+		}
+
+		await _navigationService.NavigateToAsync<AddProductViewModel>();
+	}
+
 	internal Task NavigateToAddCategoryAsync()
 		=> _navigationService.NavigateToAsync<AddCategoryViewModel>();
 
@@ -163,11 +183,26 @@ public class MainViewModel : BaseViewModel {
 		}
 
 		Categories.CollectionChanged += OnCategoriesChanged;
+		RefreshVisibleCategories();
 		OnShoppingListUpdated();
 	}
 
 	private void OnCategoriesChanged(object? sender, NotifyCollectionChangedEventArgs e) {
+		RefreshVisibleCategories();
 		_ = SaveAsync();
+	}
+
+	internal void NotifyCategoryProductsChanged() => RefreshVisibleCategories();
+
+	private void RefreshVisibleCategories() {
+		VisibleCategories.Clear();
+		foreach (var category in Categories.Where(c => c.HasProducts)
+				.OrderBy(c => c.Model.SortOrder)
+				.ThenBy(c => c.Name)) {
+			VisibleCategories.Add(category);
+		}
+
+		OnPropertyChanged(nameof(HasVisibleCategories));
 	}
 
 	private async Task ExportListAsync() {
@@ -196,6 +231,9 @@ public class MainViewModel : BaseViewModel {
 
 	private Task NavigateToRecipesAsync()
 		=> _navigationService.NavigateToAsync<RecipesViewModel>();
+
+	private Task NavigateToManageCategoriesAsync()
+		=> _navigationService.NavigateToAsync<ManageCategoriesViewModel>();
 
 	private void OnShoppingListUpdated()
 		=> ShoppingListUpdated?.Invoke(this, EventArgs.Empty);

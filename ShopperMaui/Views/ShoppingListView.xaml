@@ -26,21 +26,48 @@
         <HorizontalStackLayout Grid.Row="1" Spacing="8">
             <Button Text="Dodaj kategorię"
                     Command="{Binding AddCategoryCommand}" />
-                <Button Text="Niezakupione"
+            <Button Text="Dodaj produkt"
+                Command="{Binding AddProductCommand}" />
+            <Button Text="Zarządzaj kategoriami"
+                    Command="{Binding ManageCategoriesCommand}" />
+            <Button Text="Niezakupione"
                     Command="{Binding NavigateToUnpurchasedViewCommand}" />
             <Button Text="Przepisy"
                     Command="{Binding NavigateToRecipesCommand}" />
         </HorizontalStackLayout>
 
         <CollectionView Grid.Row="2"
-                        ItemsSource="{Binding Categories}"
+                        ItemsSource="{Binding VisibleCategories}"
                         SelectionMode="None"
-                        EmptyView="Brak kategorii. Dodaj pierwszą!">
+                        IsVisible="{Binding HasVisibleCategories}">
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout Orientation="Vertical" ItemSpacing="8" />
+            </CollectionView.ItemsLayout>
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <controls:CategoryControl />
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
+
+        <Border Grid.Row="2"
+                Padding="24"
+                StrokeThickness="0"
+                BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray900}}"
+                HorizontalOptions="Fill"
+                VerticalOptions="Center"
+                IsVisible="{Binding HasVisibleCategories, Converter={StaticResource InverseBooleanConverter}}">
+            <VerticalStackLayout Spacing="8"
+                                  HorizontalOptions="Center"
+                                  VerticalOptions="Center">
+                <Label Text="Brak produktów na liście"
+                       FontSize="18"
+                       FontAttributes="Bold"
+                       HorizontalTextAlignment="Center" />
+                <Label Text="Dodaj kategorię i pierwszy produkt, aby rozpocząć planowanie zakupów."
+                       Opacity="0.75"
+                       HorizontalTextAlignment="Center" />
+            </VerticalStackLayout>
+        </Border>
     </Grid>
 </ContentPage>

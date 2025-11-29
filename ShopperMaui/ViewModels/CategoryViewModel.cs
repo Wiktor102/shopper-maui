@@ -2,6 +2,8 @@ using ShopperMaui.Models;
 using ShopperMaui.Services;
 using ShopperMaui.ViewModels.Commands;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.Linq;
 
 namespace ShopperMaui.ViewModels;
 
@@ -25,6 +27,7 @@ public class CategoryViewModel : BaseViewModel {
 				.ThenBy(p => p.SortOrder)
 				.ThenBy(p => p.Name)
 				.Select(CreateProductViewModel));
+		Products.CollectionChanged += OnProductsCollectionChanged;
 
 		ToggleExpandCommand = new RelayCommand(() => IsExpanded = !IsExpanded);
 		AddProductCommand = new RelayCommand(() => _ = _mainViewModel.NavigateToAddProductAsync(this));
@@ -34,6 +37,16 @@ public class CategoryViewModel : BaseViewModel {
 	public Category Model => _model;
 
 	public ObservableCollection<ProductViewModel> Products { get; }
+
+	public bool HasProducts => Products.Any();
+
+	public int ProductCount => Products.Count;
+
+	public string ProductSummary => ProductCount switch {
+		0 => "Brak produktów",
+		1 => "1 produkt",
+		_ => $"{ProductCount} produktów"
+	};
 
 	public RelayCommand ToggleExpandCommand { get; }
 
@@ -124,5 +137,12 @@ public class CategoryViewModel : BaseViewModel {
 		}
 
 		await _mainViewModel.RemoveCategoryAsync(this);
+	}
+
+	private void OnProductsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e) {
+		OnPropertyChanged(nameof(ProductCount));
+		OnPropertyChanged(nameof(HasProducts));
+		OnPropertyChanged(nameof(ProductSummary));
+		_mainViewModel.NotifyCategoryProductsChanged();
 	}
 }
