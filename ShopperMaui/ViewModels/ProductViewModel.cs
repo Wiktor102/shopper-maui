@@ -2,6 +2,7 @@ using ShopperMaui.Helpers;
 using ShopperMaui.Models;
 using ShopperMaui.Services;
 using ShopperMaui.ViewModels.Commands;
+using System.Collections.ObjectModel;
 
 namespace ShopperMaui.ViewModels;
 
@@ -46,6 +47,7 @@ public class ProductViewModel : BaseViewModel {
 		TogglePurchasedCommand = new RelayCommand(TogglePurchased);
 		ToggleOptionalCommand = new RelayCommand(ToggleOptional);
 		DeleteProductCommand = new AsyncRelayCommand(DeleteProductAsync);
+		ClearStoreCommand = new RelayCommand(() => StoreName = null);
 	}
 
 	public Product Model => _model;
@@ -117,7 +119,7 @@ public class ProductViewModel : BaseViewModel {
 
 	public IReadOnlyList<string> AvailableUnits => Constants.AvailableUnits;
 
-	public IReadOnlyList<string> AvailableStores => Constants.DefaultStores;
+	public ObservableCollection<string> AvailableStores => _category.AvailableStores;
 
 	public RelayCommand IncreaseQuantityCommand { get; }
 
@@ -128,6 +130,8 @@ public class ProductViewModel : BaseViewModel {
 	public RelayCommand ToggleOptionalCommand { get; }
 
 	public AsyncRelayCommand DeleteProductCommand { get; }
+
+	public RelayCommand ClearStoreCommand { get; }
 
 	public void RefreshCategoryName() => OnPropertyChanged(nameof(CategoryName));
 
@@ -159,4 +163,14 @@ public class ProductViewModel : BaseViewModel {
 	private Task NotifyChangedAsync() => _onChanged?.Invoke(this) ?? Task.CompletedTask;
 
 	private Task NotifyPurchasedChangedAsync() => _onPurchasedChanged?.Invoke(this) ?? Task.CompletedTask;
+
+	internal void UpdateStoreNameFromManager(string? storeName) {
+		if (string.Equals(_storeName, storeName, StringComparison.Ordinal)) {
+			return;
+		}
+
+		_storeName = storeName;
+		_model.StoreName = storeName;
+		OnPropertyChanged(nameof(StoreName));
+	}
 }

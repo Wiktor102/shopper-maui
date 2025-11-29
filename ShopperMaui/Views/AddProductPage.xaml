@@ -24,11 +24,21 @@
                         SelectedItem="{Binding SelectedUnit}" WidthRequest="120" />
             </HorizontalStackLayout>
 
-            <Label Text="Sklep" />
-            <Entry Text="{Binding StoreName}" Placeholder="np. Biedronka" />
-            <Picker ItemsSource="{Binding AvailableStores}"
-                    Title="Popularne sklepy"
-                    SelectedItem="{Binding SelectedStoreSuggestion}" />
+                <Label Text="Sklep" />
+                <HorizontalStackLayout Spacing="8">
+                <Picker ItemsSource="{Binding AvailableStores}"
+                    Title="Wybierz sklep"
+                    SelectedItem="{Binding StoreName}"
+                    IsEnabled="{Binding HasStores}"
+                    WidthRequest="220" />
+                <Button Text="Wyczyść"
+                    Command="{Binding ClearStoreSelectionCommand}"
+                    IsEnabled="{Binding StoreName, Converter={StaticResource StringNotNullOrEmptyConverter}}" />
+                </HorizontalStackLayout>
+                <Label Text="Dodaj sklepy z poziomu głównej listy (Zarządzaj sklepami)."
+                   FontSize="12"
+                   TextColor="{DynamicResource Secondary}"
+                   IsVisible="{Binding HasStores, Converter={StaticResource InverseBooleanConverter}}" />
 
             <HorizontalStackLayout Spacing="8" VerticalOptions="Center">
                 <Label Text="Opcjonalny" VerticalOptions="Center" />

@@ -30,6 +30,8 @@
                 Command="{Binding AddProductCommand}" />
             <Button Text="Zarządzaj kategoriami"
                     Command="{Binding ManageCategoriesCommand}" />
+                <Button Text="Zarządzaj sklepami"
+                    Command="{Binding ManageStoresCommand}" />
             <Button Text="Niezakupione"
                     Command="{Binding NavigateToUnpurchasedViewCommand}" />
             <Button Text="Przepisy"

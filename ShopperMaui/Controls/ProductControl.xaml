@@ -15,7 +15,7 @@
             <CheckBox Grid.RowSpan="2"
                       IsChecked="{Binding IsPurchased}"
                       VerticalOptions="Center" />
-
+            
             <Label Grid.Column="1"
                    Text="{Binding Name}"
                    FontAttributes="Bold"
@@ -52,14 +52,21 @@
                     Text="Usuń"
                     Command="{Binding DeleteProductCommand}" />
 
-                 <Entry Grid.Row="1"
-                     Grid.Column="1"
-                     Text="{Binding StoreName}"
-                     Placeholder="Sklep"
-                     FontSize="12" />
+            <HorizontalStackLayout Grid.Row="1"
+                                    Grid.Column="1"
+                                    Grid.ColumnSpan="2"
+                                    Spacing="8">
+                <Picker ItemsSource="{Binding AvailableStores}"
+                        SelectedItem="{Binding StoreName, Mode=TwoWay}"
+                        Title="Wybierz sklep"
+                        WidthRequest="160" />
+                <Button Text="Wyczyść"
+                        Command="{Binding ClearStoreCommand}"
+                        IsEnabled="{Binding StoreName, Converter={StaticResource StringNotNullOrEmptyConverter}}" />
+            </HorizontalStackLayout>
 
             <Label Grid.Row="1"
-                   Grid.Column="2"
+                   Grid.Column="3"
                    Text="Opcjonalny"
                    FontSize="12"
                    TextColor="{DynamicResource Primary}">
@@ -69,13 +76,6 @@
                     </DataTrigger>
                 </Label.Triggers>
             </Label>
-
-                <Picker Grid.Row="1"
-                    Grid.Column="3"
-                    ItemsSource="{Binding AvailableStores}"
-                    SelectedItem="{Binding StoreName, Mode=TwoWay}"
-                    Title="Lista sklepów"
-                    WidthRequest="120" />
         </Grid>
 
         <Border.Triggers>

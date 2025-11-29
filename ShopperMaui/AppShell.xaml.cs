@@ -15,6 +15,7 @@ public partial class AppShell : Shell {
 		RegisterRoute<AddCategoryViewModel, AddCategoryPage>(navigationService, nameof(AddCategoryPage));
 		RegisterRoute<AddEditRecipeViewModel, AddEditRecipePage>(navigationService, nameof(AddEditRecipePage));
 		RegisterRoute<ManageCategoriesViewModel, ManageCategoriesPage>(navigationService, nameof(ManageCategoriesPage));
+		RegisterRoute<ManageStoresViewModel, ManageStoresPage>(navigationService, nameof(ManageStoresPage));
 		RegisterRoute<UnpurchasedListViewModel, UnpurchasedListView>(navigationService, nameof(UnpurchasedListView));
 
 		navigationService.RegisterRoute<RecipesViewModel>("//recipesTab");

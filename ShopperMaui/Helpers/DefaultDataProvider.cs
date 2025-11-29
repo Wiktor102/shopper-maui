@@ -48,7 +48,8 @@ public static class DefaultDataProvider {
 
 	public static ShoppingList CreateDefaultShoppingList() {
 		var shoppingList = new ShoppingList {
-			Categories = new ObservableCollection<Category>(GetDefaultCategories())
+			Categories = new ObservableCollection<Category>(GetDefaultCategories()),
+			Stores = new ObservableCollection<string>(Constants.DefaultStores)
 		};
 
 		foreach (var category in shoppingList.Categories) {

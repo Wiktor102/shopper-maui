@@ -42,6 +42,8 @@ public class CategoryViewModel : BaseViewModel {
 
 	public int ProductCount => Products.Count;
 
+	public ObservableCollection<string> AvailableStores => _mainViewModel.Stores;
+
 	public string ProductSummary => ProductCount switch {
 		0 => "Brak produktów",
 		1 => "1 produkt",

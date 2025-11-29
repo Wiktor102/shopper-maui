@@ -8,4 +8,5 @@ public class ShoppingList {
 	public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
 	public DateTime LastModified { get; set; } = DateTime.UtcNow;
 	public ObservableCollection<Category> Categories { get; set; } = new();
+	public ObservableCollection<string> Stores { get; set; } = new();
 }

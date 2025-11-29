@@ -3,6 +3,8 @@ using ShopperMaui.Models;
 using ShopperMaui.Services;
 using ShopperMaui.ViewModels.Commands;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.Linq;
 
 namespace ShopperMaui.ViewModels;
 
@@ -15,7 +17,6 @@ public class AddProductViewModel : BaseViewModel, IQueryAttributable {
 	private string _selectedUnit = Constants.AvailableUnits.First();
 	private bool _isOptional;
 	private string? _storeName;
-	private string? _selectedStoreSuggestion;
 	private CategoryViewModel? _selectedCategory;
 
 	public AddProductViewModel(MainViewModel mainViewModel, INavigationService navigationService) {
@@ -31,6 +32,9 @@ public class AddProductViewModel : BaseViewModel, IQueryAttributable {
 				Quantity -= 1;
 			}
 		});
+		ClearStoreSelectionCommand = new RelayCommand(() => StoreName = null);
+
+		_mainViewModel.Stores.CollectionChanged += OnStoresCollectionChanged;
 
 		if (_mainViewModel.Categories.Any()) {
 			SelectedCategory = _mainViewModel.Categories.First();
@@ -43,7 +47,9 @@ public class AddProductViewModel : BaseViewModel, IQueryAttributable {
 
 	public IReadOnlyList<string> AvailableUnits => Constants.AvailableUnits;
 
-	public IReadOnlyList<string> AvailableStores => Constants.DefaultStores;
+	public ObservableCollection<string> AvailableStores => _mainViewModel.Stores;
+
+	public bool HasStores => _mainViewModel.Stores.Any();
 
 	public string ProductName {
 		get => _productName;
@@ -70,15 +76,6 @@ public class AddProductViewModel : BaseViewModel, IQueryAttributable {
 		set => SetProperty(ref _storeName, value);
 	}
 
-	public string? SelectedStoreSuggestion {
-		get => _selectedStoreSuggestion;
-		set {
-			if (SetProperty(ref _selectedStoreSuggestion, value) && !string.IsNullOrWhiteSpace(value)) {
-				StoreName = value;
-			}
-		}
-	}
-
 	public CategoryViewModel? SelectedCategory {
 		get => _selectedCategory;
 		set {
@@ -95,6 +92,8 @@ public class AddProductViewModel : BaseViewModel, IQueryAttributable {
 	public RelayCommand IncreaseQuantityCommand { get; }
 
 	public RelayCommand DecreaseQuantityCommand { get; }
+
+	public RelayCommand ClearStoreSelectionCommand { get; }
 
 	public void ApplyQueryAttributes(IDictionary<string, object> query) {
 		if (query.TryGetValue("categoryId", out var value)) {
@@ -143,8 +142,17 @@ public class AddProductViewModel : BaseViewModel, IQueryAttributable {
 
 		ProductName = string.Empty;
 		Quantity = 1;
-		StoreName = string.Empty;
+		StoreName = null;
 		ErrorMessage = string.Empty;
 		await _navigationService.GoBackAsync();
+	}
+
+	private void OnStoresCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e) {
+		OnPropertyChanged(nameof(HasStores));
+		OnPropertyChanged(nameof(AvailableStores));
+
+		if (StoreName is not null && !_mainViewModel.Stores.Any(store => string.Equals(store, StoreName, StringComparison.OrdinalIgnoreCase))) {
+			StoreName = null;
+		}
 	}
 }

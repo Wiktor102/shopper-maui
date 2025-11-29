@@ -25,10 +25,14 @@ public class MainViewModel : BaseViewModel {
 		Categories = new ObservableCollection<CategoryViewModel>();
 		Categories.CollectionChanged += OnCategoriesChanged;
 
+		Stores = new ObservableCollection<string>();
+		Stores.CollectionChanged += OnStoresChanged;
+
 		AddCategoryCommand = new RelayCommand(() => _ = NavigateToAddCategoryAsync());
 		NavigateToUnpurchasedViewCommand = new RelayCommand(() => _ = NavigateToUnpurchasedViewAsync());
 		NavigateToRecipesCommand = new RelayCommand(() => _ = NavigateToRecipesAsync());
 		ManageCategoriesCommand = new RelayCommand(() => _ = NavigateToManageCategoriesAsync());
+		ManageStoresCommand = new RelayCommand(() => _ = NavigateToManageStoresAsync());
 		AddProductCommand = new AsyncRelayCommand(NavigateToAddProductAsync, () => !IsBusy, busy => IsBusy = busy);
 		ExportListCommand = new AsyncRelayCommand(ExportListAsync, () => !IsBusy, busy => IsBusy = busy);
 		ImportListCommand = new AsyncRelayCommand(ImportListAsync, () => !IsBusy, busy => IsBusy = busy);
@@ -42,6 +46,10 @@ public class MainViewModel : BaseViewModel {
 
 	public bool HasVisibleCategories => VisibleCategories.Any();
 
+	public ObservableCollection<string> Stores { get; }
+
+	public bool HasStores => Stores.Any();
+
 	public ShoppingList CurrentShoppingList {
 		get => _currentShoppingList;
 		private set => SetProperty(ref _currentShoppingList, value);
@@ -54,6 +62,8 @@ public class MainViewModel : BaseViewModel {
 	public RelayCommand NavigateToRecipesCommand { get; }
 
 	public RelayCommand ManageCategoriesCommand { get; }
+
+	public RelayCommand ManageStoresCommand { get; }
 
 	public AsyncRelayCommand AddProductCommand { get; }
 
@@ -85,6 +95,10 @@ public class MainViewModel : BaseViewModel {
 				}
 			}
 
+			if (CurrentShoppingList.Stores is null || !CurrentShoppingList.Stores.Any()) {
+				CurrentShoppingList.Stores = new ObservableCollection<string>(Constants.DefaultStores);
+			}
+
 			BuildCategoryViewModels();
 		} catch (Exception ex) {
 			ErrorMessage = ex.Message;
@@ -98,6 +112,17 @@ public class MainViewModel : BaseViewModel {
 			foreach (var (category, index) in Categories.Select((category, index) => (category, index))) {
 				category.UpdateSortOrder(index);
 				category.SyncModel();
+			}
+
+			CurrentShoppingList.Stores ??= new ObservableCollection<string>();
+			CurrentShoppingList.Stores.Clear();
+			foreach (var store in Stores) {
+				var normalized = NormalizeStoreName(store);
+				if (normalized is null) {
+					continue;
+				}
+
+				CurrentShoppingList.Stores.Add(normalized);
 			}
 
 			CurrentShoppingList.LastModified = DateTime.UtcNow;
@@ -128,6 +153,101 @@ public class MainViewModel : BaseViewModel {
 		Categories.Add(categoryViewModel);
 		await SaveAsync();
 		return true;
+	}
+
+	public bool StoreExists(string storeName) {
+		var normalized = NormalizeStoreName(storeName);
+		return normalized is not null && Stores.Any(store => StoreNamesEqual(store, normalized));
+	}
+
+	public async Task<bool> AddStoreAsync(string storeName) {
+		var normalized = NormalizeStoreName(storeName);
+		if (normalized is null) {
+			await _dialogService.ShowAlertAsync("Nieprawidłowa nazwa", "Podaj nazwę sklepu.");
+			return false;
+		}
+
+		if (StoreExists(normalized)) {
+			await _dialogService.ShowAlertAsync("Sklep istnieje", $"Sklep \"{normalized}\" już istnieje.");
+			return false;
+		}
+
+		Stores.Add(normalized);
+		await SaveAsync();
+		return true;
+	}
+
+	public async Task<bool> RenameStoreAsync(string existingName, string newName) {
+		if (!TryFindStore(existingName, out var index)) {
+			await _dialogService.ShowAlertAsync("Nie znaleziono sklepu", "Wybrany sklep nie istnieje na liście.");
+			return false;
+		}
+
+		var normalized = NormalizeStoreName(newName);
+		if (normalized is null) {
+			await _dialogService.ShowAlertAsync("Nieprawidłowa nazwa", "Podaj nazwę sklepu.");
+			return false;
+		}
+
+		if (Stores.Where((_, idx) => idx != index).Any(store => StoreNamesEqual(store, normalized))) {
+			await _dialogService.ShowAlertAsync("Sklep istnieje", $"Sklep \"{normalized}\" już istnieje.");
+			return false;
+		}
+
+		var originalName = Stores[index];
+		if (string.Equals(originalName, normalized, StringComparison.Ordinal)) {
+			return true;
+		}
+
+		Stores[index] = normalized;
+		UpdateProductsStoreReference(originalName, normalized);
+		await SaveAsync();
+		return true;
+	}
+
+	public async Task<bool> RemoveStoreAsync(string storeName) {
+		if (!TryFindStore(storeName, out var index)) {
+			return false;
+		}
+
+		var originalName = Stores[index];
+		Stores.RemoveAt(index);
+		UpdateProductsStoreReference(originalName, null);
+		await SaveAsync();
+		return true;
+	}
+
+	private bool TryFindStore(string storeName, out int index) {
+		var normalized = NormalizeStoreName(storeName);
+		if (normalized is null) {
+			index = -1;
+			return false;
+		}
+
+		for (var i = 0; i < Stores.Count; i++) {
+			if (StoreNamesEqual(Stores[i], normalized)) {
+				index = i;
+				return true;
+			}
+		}
+
+		index = -1;
+		return false;
+	}
+
+	private void UpdateProductsStoreReference(string oldName, string? newName) {
+		var normalizedNewName = NormalizeStoreName(newName);
+		foreach (var category in Categories) {
+			foreach (var product in category.Products) {
+				if (product.StoreName is null) {
+					continue;
+				}
+
+				if (StoreNamesEqual(product.StoreName, oldName)) {
+					product.UpdateStoreNameFromManager(normalizedNewName);
+				}
+			}
+		}
 	}
 
 	public async Task<bool> AddProductAsync(Guid categoryId, Product product) {
@@ -184,6 +304,7 @@ public class MainViewModel : BaseViewModel {
 
 		Categories.CollectionChanged += OnCategoriesChanged;
 		RefreshVisibleCategories();
+		RefreshStores();
 		OnShoppingListUpdated();
 	}
 
@@ -191,6 +312,9 @@ public class MainViewModel : BaseViewModel {
 		RefreshVisibleCategories();
 		_ = SaveAsync();
 	}
+
+	private void OnStoresChanged(object? sender, NotifyCollectionChangedEventArgs e)
+		=> OnPropertyChanged(nameof(HasStores));
 
 	internal void NotifyCategoryProductsChanged() => RefreshVisibleCategories();
 
@@ -203,6 +327,39 @@ public class MainViewModel : BaseViewModel {
 		}
 
 		OnPropertyChanged(nameof(HasVisibleCategories));
+	}
+
+	private void RefreshStores() {
+		Stores.Clear();
+		if (CurrentShoppingList.Stores is null) {
+			CurrentShoppingList.Stores = new ObservableCollection<string>();
+		}
+
+		foreach (var store in CurrentShoppingList.Stores) {
+			var normalized = NormalizeStoreName(store);
+			if (normalized is null) {
+				continue;
+			}
+
+			if (!Stores.Any(existing => StoreNamesEqual(existing, normalized))) {
+				Stores.Add(normalized);
+			}
+		}
+
+		var storesFromProducts = CurrentShoppingList.Categories
+			.SelectMany(category => category.Products)
+			.Select(product => NormalizeStoreName(product.StoreName))
+			.Where(static name => name is not null)
+			.Cast<string>();
+
+		foreach (var store in storesFromProducts) {
+			if (!Stores.Any(existing => StoreNamesEqual(existing, store))) {
+				Stores.Add(store);
+			}
+		}
+
+		OnPropertyChanged(nameof(Stores));
+		OnPropertyChanged(nameof(HasStores));
 	}
 
 	private async Task ExportListAsync() {
@@ -226,6 +383,12 @@ public class MainViewModel : BaseViewModel {
 		BuildCategoryViewModels();
 	}
 
+	private static string? NormalizeStoreName(string? storeName)
+		=> string.IsNullOrWhiteSpace(storeName) ? null : storeName.Trim();
+
+	private static bool StoreNamesEqual(string? left, string? right)
+		=> string.Equals(left, right, StringComparison.OrdinalIgnoreCase);
+
 	private Task NavigateToUnpurchasedViewAsync()
 		=> _navigationService.NavigateToAsync<UnpurchasedListViewModel>();
 
@@ -234,6 +397,9 @@ public class MainViewModel : BaseViewModel {
 
 	private Task NavigateToManageCategoriesAsync()
 		=> _navigationService.NavigateToAsync<ManageCategoriesViewModel>();
+
+	private Task NavigateToManageStoresAsync()
+		=> _navigationService.NavigateToAsync<ManageStoresViewModel>();
 
 	private void OnShoppingListUpdated()
 		=> ShoppingListUpdated?.Invoke(this, EventArgs.Empty);

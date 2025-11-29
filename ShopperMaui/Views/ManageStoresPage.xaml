@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:ShopperMaui.ViewModels"
+             x:Class="ShopperMaui.Views.ManageStoresPage"
+             x:Name="ManageStoresPageRoot"
+             x:DataType="vm:ManageStoresViewModel"
+             Title="Sklepy">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Dodaj"
+                     Command="{Binding AddStoreCommand}" />
+        <ToolbarItem Text="Zamknij"
+                     Order="Primary"
+                     Priority="0"
+                     Command="{Binding CloseCommand}" />
+    </ContentPage.ToolbarItems>
+
+    <Grid Padding="16">
+        <CollectionView ItemsSource="{Binding Stores}"
+                        SelectionMode="None"
+                        IsVisible="{Binding HasStores}">
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout Orientation="Vertical" ItemSpacing="12" />
+            </CollectionView.ItemsLayout>
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="x:String">
+                    <Border StrokeThickness="1"
+                            Stroke="{DynamicResource Primary}"
+                            StrokeShape="RoundRectangle 12"
+                            Padding="16">
+                        <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="12" VerticalOptions="Center">
+                            <Label Text="{Binding .}"
+                                   FontAttributes="Bold"
+                                   VerticalOptions="Center" />
+                                <Button Grid.Column="1"
+                                    Text="Zmień"
+                                    Command="{Binding Source={x:Reference ManageStoresPageRoot}, Path=BindingContext.RenameStoreCommand}"
+                                    CommandParameter="{Binding .}" />
+                                <Button Grid.Column="2"
+                                    Text="Usuń"
+                                    Command="{Binding Source={x:Reference ManageStoresPageRoot}, Path=BindingContext.DeleteStoreCommand}"
+                                    CommandParameter="{Binding .}" />
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <Border Padding="24"
+                StrokeThickness="0"
+                BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray900}}"
+                HorizontalOptions="Fill"
+                VerticalOptions="Center"
+                IsVisible="{Binding HasStores, Converter={StaticResource InverseBooleanConverter}}">
+            <VerticalStackLayout Spacing="8"
+                                  HorizontalOptions="Center"
+                                  VerticalOptions="Center">
+                <Label Text="Brak sklepów"
+                       FontSize="18"
+                       FontAttributes="Bold"
+                       HorizontalTextAlignment="Center" />
+                <Label Text="Dodaj pierwszy sklep, aby szybciej porządkować produkty."
+                       Opacity="0.75"
+                       HorizontalTextAlignment="Center" />
+            </VerticalStackLayout>
+        </Border>
+    </Grid>
+</ContentPage>
