@@ -18,15 +18,14 @@ public class ManageDataViewModel : BaseViewModel {
 
 		Title = "Zarządzanie danymi";
 
+		CategoryItems = [];
+		StoreItems = [];
+
 		// Category commands
 		AddCategoryCommand = new RelayCommand(() => _ = _mainViewModel.NavigateToAddCategoryAsync());
 
 		// Store commands
 		AddStoreCommand = new AsyncRelayCommand(AddStoreAsync);
-		RenameStoreCommand = new AsyncRelayCommand(parameter =>
-			parameter is string store ? RenameStoreAsync(store) : Task.CompletedTask);
-		DeleteStoreCommand = new AsyncRelayCommand(parameter =>
-			parameter is string store ? DeleteStoreAsync(store) : Task.CompletedTask);
 
 		CloseCommand = new RelayCommand(() => _ = _navigationService.GoBackAsync());
 	}
@@ -37,42 +36,66 @@ public class ManageDataViewModel : BaseViewModel {
 	}
 
 	// Categories
-	public ObservableCollection<CategoryViewModel> Categories => _mainViewModel.Categories;
-	public bool HasCategories => Categories.Any();
+	public ObservableCollection<EditableItemViewModel> CategoryItems { get; }
 	public RelayCommand AddCategoryCommand { get; }
 
 	// Stores
-	public ObservableCollection<string> Stores => _mainViewModel.Stores;
-	public bool HasStores => Stores.Any();
+	public ObservableCollection<EditableItemViewModel> StoreItems { get; }
 	public AsyncRelayCommand AddStoreCommand { get; }
-	public AsyncRelayCommand RenameStoreCommand { get; }
-	public AsyncRelayCommand DeleteStoreCommand { get; }
 
 	public RelayCommand CloseCommand { get; }
 
 	public async Task InitializeAsync() {
 		await _mainViewModel.InitializeAsync();
-		OnPropertyChanged(nameof(HasCategories));
-		OnPropertyChanged(nameof(HasStores));
+		RebuildCategoryItems();
+		RebuildStoreItems();
 	}
 
 	public void Attach() {
 		_mainViewModel.Categories.CollectionChanged += OnCategoriesChanged;
-		Stores.CollectionChanged += OnStoresChanged;
-		OnPropertyChanged(nameof(HasCategories));
-		OnPropertyChanged(nameof(HasStores));
+		_mainViewModel.Stores.CollectionChanged += OnStoresChanged;
+		RebuildCategoryItems();
+		RebuildStoreItems();
 	}
 
 	public void Detach() {
 		_mainViewModel.Categories.CollectionChanged -= OnCategoriesChanged;
-		Stores.CollectionChanged -= OnStoresChanged;
+		_mainViewModel.Stores.CollectionChanged -= OnStoresChanged;
 	}
 
 	private void OnCategoriesChanged(object? sender, NotifyCollectionChangedEventArgs e)
-		=> OnPropertyChanged(nameof(HasCategories));
+		=> RebuildCategoryItems();
 
 	private void OnStoresChanged(object? sender, NotifyCollectionChangedEventArgs e)
-		=> OnPropertyChanged(nameof(HasStores));
+		=> RebuildStoreItems();
+
+	private void RebuildCategoryItems() {
+		CategoryItems.Clear();
+		foreach (var category in _mainViewModel.Categories) {
+			var item = new EditableItemViewModel(
+				category.Name,
+				category.ProductSummary,
+				async () => await DeleteCategoryAsync(category),
+				(newName) => {
+					category.Name = newName;
+					return Task.CompletedTask;
+				});
+			CategoryItems.Add(item);
+		}
+	}
+
+	private void RebuildStoreItems() {
+		StoreItems.Clear();
+		foreach (var store in _mainViewModel.Stores) {
+			var originalName = store;
+			var item = new EditableItemViewModel(
+				store,
+				null,
+				async () => await DeleteStoreAsync(originalName),
+				async (newName) => await RenameStoreAsync(originalName, newName));
+			StoreItems.Add(item);
+		}
+	}
 
 	private async Task AddStoreAsync() {
 		var storeName = await _dialogService.ShowPromptAsync("Dodaj sklep", "Podaj nazwę sklepu.", "np. Biedronka");
@@ -83,21 +106,23 @@ public class ManageDataViewModel : BaseViewModel {
 		await _mainViewModel.AddStoreAsync(storeName);
 	}
 
-	private async Task RenameStoreAsync(string store) {
-		var newName = await _dialogService.ShowPromptAsync("Zmień nazwę sklepu", $"Nowa nazwa dla \"{store}\".", store);
-		if (newName is null) {
+	private async Task RenameStoreAsync(string oldName, string newName) {
+		if (string.IsNullOrWhiteSpace(newName) || oldName == newName) {
 			return;
 		}
 
-		await _mainViewModel.RenameStoreAsync(store, newName);
+		await _mainViewModel.RenameStoreAsync(oldName, newName);
+	}
+
+	private async Task DeleteCategoryAsync(CategoryViewModel category) {
+		var confirm = await _dialogService.ShowConfirmAsync("Usuń kategorię", $"Czy na pewno chcesz usunąć {category.Name}?");
+		if (!confirm) return;
+		await _mainViewModel.RemoveCategoryAsync(category);
 	}
 
 	private async Task DeleteStoreAsync(string store) {
 		var confirm = await _dialogService.ShowConfirmAsync("Usuń sklep", $"Czy na pewno chcesz usunąć sklep \"{store}\"? Wszystkie produkty przypisane do tego sklepu zostaną zaktualizowane.");
-		if (!confirm) {
-			return;
-		}
-
+		if (!confirm) return;
 		await _mainViewModel.RemoveStoreAsync(store);
 	}
 }

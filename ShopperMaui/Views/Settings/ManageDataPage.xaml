@@ -2,6 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:ShopperMaui.ViewModels"
+             xmlns:controls="clr-namespace:ShopperMaui.Controls"
              x:Class="ShopperMaui.Views.ManageDataPage"
              x:Name="ManageDataPageRoot"
              x:DataType="vm:ManageDataViewModel"
@@ -28,148 +29,29 @@
         </Border>
 
         <!-- Categories Tab Content -->
-        <Grid Grid.Row="1" 
-              Padding="16"
-              IsVisible="{Binding SelectedTabIndex, Converter={StaticResource TabVisibilityConverter}, ConverterParameter=0}">
-            
-            <!-- Categories List -->
-            <CollectionView ItemsSource="{Binding Categories}"
-                            SelectionMode="None"
-                            IsVisible="{Binding HasCategories}">
-                <CollectionView.ItemsLayout>
-                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="12" />
-                </CollectionView.ItemsLayout>
-                <CollectionView.Header>
-                    <Button Text="+ Dodaj kategorię"
-                            Command="{Binding AddCategoryCommand}"
-                            Style="{StaticResource OutlineButton}"
-                            HorizontalOptions="Fill"
-                            Margin="0,0,0,16"/>
-                </CollectionView.Header>
-                <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="vm:CategoryViewModel">
-                        <Border Style="{StaticResource CardBorder}">
-                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
-                                <VerticalStackLayout Spacing="4" VerticalOptions="Center">
-                                    <Entry Text="{Binding Name}"
-                                           Placeholder="Nazwa kategorii"
-                                           FontAttributes="Bold"
-                                           FontSize="16" />
-                                    <Label Text="{Binding ProductSummary}"
-                                           FontSize="12"
-                                           TextColor="{StaticResource TextSecondary}" />
-                                </VerticalStackLayout>
-                                <Button Grid.Column="1"
-                                        Text="🗑️"
-                                        Command="{Binding DeleteCategoryCommand}"
-                                        Style="{StaticResource IconDangerButton}"
-                                        WidthRequest="44"
-                                        HeightRequest="44"/>
-                            </Grid>
-                        </Border>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
-
-            <!-- Empty Categories State -->
-            <VerticalStackLayout IsVisible="{Binding HasCategories, Converter={StaticResource InverseBooleanConverter}}"
-                                 VerticalOptions="Center"
-                                 HorizontalOptions="Fill"
-                                 Spacing="16">
-                <Border Style="{StaticResource CardBorder}"
-                        HorizontalOptions="Fill">
-                    <VerticalStackLayout Spacing="12"
-                                         HorizontalOptions="Center">
-                        <Label Text="📁" 
-                               FontSize="48" 
-                               HorizontalTextAlignment="Center" />
-                        <Label Text="Brak kategorii"
-                               FontSize="18"
-                               FontAttributes="Bold"
-                               HorizontalTextAlignment="Center" />
-                        <Label Text="Dodaj pierwszą kategorię, aby zacząć budować listę zakupów."
-                               Opacity="0.75"
-                               HorizontalTextAlignment="Center" />
-                    </VerticalStackLayout>
-                </Border>
-                <Button Text="+ Dodaj kategorię"
-                        Command="{Binding AddCategoryCommand}"
-                        HorizontalOptions="Fill"/>
-            </VerticalStackLayout>
-        </Grid>
+        <controls:EditableItemListControl Grid.Row="1"
+                                          Padding="16"
+                                          IsVisible="{Binding SelectedTabIndex, Converter={StaticResource TabVisibilityConverter}, ConverterParameter=0}"
+                                          ItemsSource="{Binding CategoryItems}"
+                                          AddCommand="{Binding AddCategoryCommand}"
+                                          AddButtonText="+ Dodaj kategorię"
+                                          ItemPlaceholder="Nazwa kategorii"
+                                          ShowSubtitle="True"
+                                          EmptyStateIcon="📁"
+                                          EmptyStateTitle="Brak kategorii"
+                                          EmptyStateDescription="Dodaj pierwszą kategorię, aby zacząć budować listę zakupów." />
 
         <!-- Stores Tab Content -->
-        <Grid Grid.Row="1" 
-              Padding="16"
-              IsVisible="{Binding SelectedTabIndex, Converter={StaticResource TabVisibilityConverter}, ConverterParameter=1}">
-            
-            <!-- Stores List -->
-            <CollectionView ItemsSource="{Binding Stores}"
-                            SelectionMode="None"
-                            IsVisible="{Binding HasStores}">
-                <CollectionView.ItemsLayout>
-                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="12" />
-                </CollectionView.ItemsLayout>
-                <CollectionView.Header>
-                    <Button Text="+ Dodaj sklep"
-                            Command="{Binding AddStoreCommand}"
-                            Style="{StaticResource OutlineButton}"
-                            HorizontalOptions="Fill"
-                            Margin="0,0,0,16"/>
-                </CollectionView.Header>
-                <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="x:String">
-                        <Border Style="{StaticResource CardBorder}">
-                            <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8" VerticalOptions="Center">
-                                <Label Text="{Binding .}"
-                                       FontAttributes="Bold"
-                                       FontSize="16"
-                                       VerticalOptions="Center" />
-                                <Button Grid.Column="1"
-                                        Text="✏️"
-                                        Command="{Binding Source={x:Reference ManageDataPageRoot}, Path=BindingContext.RenameStoreCommand}"
-                                        CommandParameter="{Binding .}"
-                                        Style="{StaticResource IconSecondaryButton}"
-                                        WidthRequest="44"
-                                        HeightRequest="44"/>
-                                <Button Grid.Column="2"
-                                        Text="🗑️"
-                                        Command="{Binding Source={x:Reference ManageDataPageRoot}, Path=BindingContext.DeleteStoreCommand}"
-                                        CommandParameter="{Binding .}"
-                                        Style="{StaticResource IconDangerButton}"
-                                        WidthRequest="44"
-                                        HeightRequest="44"/>
-                            </Grid>
-                        </Border>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
-
-            <!-- Empty Stores State -->
-            <VerticalStackLayout IsVisible="{Binding HasStores, Converter={StaticResource InverseBooleanConverter}}"
-                                 VerticalOptions="Center"
-                                 HorizontalOptions="Fill"
-                                 Spacing="16">
-                <Border Style="{StaticResource CardBorder}"
-                        HorizontalOptions="Fill">
-                    <VerticalStackLayout Spacing="12"
-                                         HorizontalOptions="Center">
-                        <Label Text="🏪" 
-                               FontSize="48" 
-                               HorizontalTextAlignment="Center" />
-                        <Label Text="Brak sklepów"
-                               FontSize="18"
-                               FontAttributes="Bold"
-                               HorizontalTextAlignment="Center" />
-                        <Label Text="Dodaj pierwszy sklep, aby szybciej porządkować produkty."
-                               Opacity="0.75"
-                               HorizontalTextAlignment="Center" />
-                    </VerticalStackLayout>
-                </Border>
-                <Button Text="+ Dodaj sklep"
-                        Command="{Binding AddStoreCommand}"
-                        HorizontalOptions="Fill"/>
-            </VerticalStackLayout>
-        </Grid>
+        <controls:EditableItemListControl Grid.Row="1"
+                                          Padding="16"
+                                          IsVisible="{Binding SelectedTabIndex, Converter={StaticResource TabVisibilityConverter}, ConverterParameter=1}"
+                                          ItemsSource="{Binding StoreItems}"
+                                          AddCommand="{Binding AddStoreCommand}"
+                                          AddButtonText="+ Dodaj sklep"
+                                          ItemPlaceholder="Nazwa sklepu"
+                                          ShowSubtitle="False"
+                                          EmptyStateIcon="🏪"
+                                          EmptyStateTitle="Brak sklepów"
+                                          EmptyStateDescription="Dodaj pierwszy sklep, aby szybciej porządkować produkty." />
     </Grid>
 </ContentPage>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:ShopperMaui.ViewModels"
+             x:Class="ShopperMaui.Controls.EditableItemListControl"
+             x:Name="Root">
+
+    <Grid>
+        <!-- Items List -->
+        <CollectionView ItemsSource="{Binding Source={x:Reference Root}, Path=ItemsSource}"
+                        SelectionMode="None"
+                        IsVisible="{Binding Source={x:Reference Root}, Path=HasItems}">
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout Orientation="Vertical" ItemSpacing="12" />
+            </CollectionView.ItemsLayout>
+            <CollectionView.Header>
+                <Button Text="{Binding Source={x:Reference Root}, Path=AddButtonText}"
+                        Command="{Binding Source={x:Reference Root}, Path=AddCommand}"
+                        Style="{StaticResource OutlineButton}"
+                        HorizontalOptions="Fill"
+                        Margin="0,0,0,16"/>
+            </CollectionView.Header>
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="vm:EditableItemViewModel">
+                    <Border Style="{StaticResource CardBorder}">
+                        <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto" ColumnSpacing="12" RowSpacing="4">
+                            <Entry Grid.Column="0" Grid.Row="0" 
+                                   Text="{Binding Name}"
+                                   Placeholder="{Binding Source={x:Reference Root}, Path=ItemPlaceholder}"
+                                   FontAttributes="Bold"
+                                   FontSize="16" />
+                            <Label Grid.Column="0" Grid.Row="1" 
+                                   Text="{Binding Subtitle}"
+                                   FontSize="12"
+                                   TextColor="{StaticResource TextSecondary}"
+                                   IsVisible="{Binding Source={x:Reference Root}, Path=ShowSubtitle}" />
+                            <Button Grid.Column="1"
+                                    Grid.Row="0"
+                                    Text="🗑️"
+                                    Command="{Binding DeleteCommand}"
+                                    Style="{StaticResource IconDangerButton}"
+                                    WidthRequest="44"
+                                    HeightRequest="44"/>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <!-- Empty State -->
+        <VerticalStackLayout IsVisible="{Binding Source={x:Reference Root}, Path=HasItems, Converter={StaticResource InverseBooleanConverter}}"
+                             VerticalOptions="Center"
+                             HorizontalOptions="Fill"
+                             Spacing="16">
+            <Border Style="{StaticResource CardBorder}"
+                    HorizontalOptions="Fill">
+                <VerticalStackLayout Spacing="12"
+                                     HorizontalOptions="Center">
+                    <Label Text="{Binding Source={x:Reference Root}, Path=EmptyStateIcon}" 
+                           FontSize="48" 
+                           HorizontalTextAlignment="Center" />
+                    <Label Text="{Binding Source={x:Reference Root}, Path=EmptyStateTitle}"
+                           FontSize="18"
+                           FontAttributes="Bold"
+                           HorizontalTextAlignment="Center" />
+                    <Label Text="{Binding Source={x:Reference Root}, Path=EmptyStateDescription}"
+                           Opacity="0.75"
+                           HorizontalTextAlignment="Center" />
+                </VerticalStackLayout>
+            </Border>
+            <Button Text="{Binding Source={x:Reference Root}, Path=AddButtonText}"
+                    Command="{Binding Source={x:Reference Root}, Path=AddCommand}"
+                    HorizontalOptions="Fill"/>
+        </VerticalStackLayout>
+    </Grid>
+</ContentView>
