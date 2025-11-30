@@ -86,35 +86,6 @@ public class RecipesViewModel : BaseViewModel {
 			return;
 		}
 
-		foreach (var ingredient in recipe.Ingredients) {
-			var category = _mainViewModel.Categories.FirstOrDefault(c =>
-				string.Equals(c.Name, ingredient.CategoryName, StringComparison.OrdinalIgnoreCase));
-
-			if (category is null && !string.IsNullOrWhiteSpace(ingredient.CategoryName)) {
-				await _mainViewModel.AddCategoryAsync(ingredient.CategoryName);
-				category = _mainViewModel.Categories.FirstOrDefault(c =>
-					string.Equals(c.Name, ingredient.CategoryName, StringComparison.OrdinalIgnoreCase));
-			}
-
-			if (!_mainViewModel.Categories.Any()) {
-				await _mainViewModel.AddCategoryAsync(Constants.DefaultCategories.First());
-			}
-
-			var targetCategory = category ?? _mainViewModel.Categories.First();
-			var product = new Product {
-				Id = Guid.NewGuid(),
-				Name = ingredient.ProductName,
-				Quantity = ingredient.Quantity,
-				Unit = ingredient.Unit,
-				IsOptional = false,
-				IsPurchased = false,
-				CategoryId = targetCategory.Model.Id
-			};
-
-			await _mainViewModel.AddProductAsync(targetCategory.Model.Id, product);
-		}
-
-		await _dialogService.ShowToastAsync($"Dodane składniki z przepisu '{recipe.Name}' do listy zakupów");
-		await Shell.Current.GoToAsync("///shoppingList");
+		await RecipeHelper.AddRecipeToShoppingListAsync(recipe, _mainViewModel, _dialogService);
 	}
 }

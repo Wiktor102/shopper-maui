@@ -13,6 +13,7 @@ namespace ShopperMaui.ViewModels;
 public class RecipeDetailsViewModel : BaseViewModel, IQueryAttributable {
 	private readonly IRecipeService _recipeService;
 	private readonly INavigationService _navigationService;
+	private readonly IDialogService _dialogService;
 	private readonly MainViewModel _mainViewModel;
 	private Guid? _recipeId;
 	private Recipe? _currentRecipe;
@@ -20,9 +21,10 @@ public class RecipeDetailsViewModel : BaseViewModel, IQueryAttributable {
 	private string _recipeDescription = string.Empty;
 	private string _recipeDirections = string.Empty;
 
-	public RecipeDetailsViewModel(IRecipeService recipeService, INavigationService navigationService, MainViewModel mainViewModel) {
+	public RecipeDetailsViewModel(IRecipeService recipeService, INavigationService navigationService, IDialogService dialogService, MainViewModel mainViewModel) {
 		_recipeService = recipeService;
 		_navigationService = navigationService;
+		_dialogService = dialogService;
 		_mainViewModel = mainViewModel;
 		Title = "Przepis";
 		Ingredients = new ObservableCollection<RecipeIngredient>();
@@ -111,33 +113,7 @@ public class RecipeDetailsViewModel : BaseViewModel, IQueryAttributable {
 			return;
 		}
 
-		foreach (var ingredient in recipe.Ingredients) {
-			var category = _mainViewModel.Categories.FirstOrDefault(c =>
-				string.Equals(c.Name, ingredient.CategoryName, StringComparison.OrdinalIgnoreCase));
-
-			if (category is null && !string.IsNullOrWhiteSpace(ingredient.CategoryName)) {
-				await _mainViewModel.AddCategoryAsync(ingredient.CategoryName);
-				category = _mainViewModel.Categories.FirstOrDefault(c =>
-					string.Equals(c.Name, ingredient.CategoryName, StringComparison.OrdinalIgnoreCase));
-			}
-
-			if (!_mainViewModel.Categories.Any()) {
-				await _mainViewModel.AddCategoryAsync(Constants.DefaultCategories.First());
-			}
-
-			var targetCategory = category ?? _mainViewModel.Categories.First();
-			var product = new Product {
-				Id = Guid.NewGuid(),
-				Name = ingredient.ProductName,
-				Quantity = ingredient.Quantity,
-				Unit = ingredient.Unit,
-				IsOptional = false,
-				IsPurchased = false,
-				CategoryId = targetCategory.Model.Id
-			};
-
-			await _mainViewModel.AddProductAsync(targetCategory.Model.Id, product);
-		}
+		await RecipeHelper.AddRecipeToShoppingListAsync(recipe, _mainViewModel, _dialogService);
 	}
 
 	private async Task DeleteRecipeAsync() {
