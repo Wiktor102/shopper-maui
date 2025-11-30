@@ -12,20 +12,22 @@ public class MainViewModel : BaseViewModel {
 	private readonly IDataService _dataService;
 	private readonly INavigationService _navigationService;
 	private readonly IDialogService _dialogService;
+	private readonly IFileSaver _fileSaver;
 	private ShoppingList _currentShoppingList = new();
 	private bool _isInitialized;
 	private readonly object _syncRoot = new();
 
-	public MainViewModel(IDataService dataService, INavigationService navigationService, IDialogService dialogService) {
+	public MainViewModel(IDataService dataService, INavigationService navigationService, IDialogService dialogService, IFileSaver fileSaver) {
 		_dataService = dataService;
 		_navigationService = navigationService;
 		_dialogService = dialogService;
+		_fileSaver = fileSaver;
 
 		Title = "Lista Zakupów";
-		Categories = new ObservableCollection<CategoryViewModel>();
+		Categories = [];
 		Categories.CollectionChanged += OnCategoriesChanged;
 
-		Stores = new ObservableCollection<string>();
+		Stores = [];
 		Stores.CollectionChanged += OnStoresChanged;
 
 		AddCategoryCommand = new RelayCommand(() => _ = NavigateToAddCategoryAsync());
@@ -66,18 +68,14 @@ public class MainViewModel : BaseViewModel {
 	public AsyncRelayCommand ImportListCommand { get; }
 
 	public async Task InitializeAsync() {
-		if (_isInitialized) {
-			return;
-		}
+		if (_isInitialized) return;
 
 		await LoadAsync();
 		_isInitialized = true;
 	}
 
 	public async Task LoadAsync() {
-		if (IsBusy) {
-			return;
-		}
+		if (IsBusy) return;
 
 		try {
 			IsBusy = true;
@@ -357,11 +355,15 @@ public class MainViewModel : BaseViewModel {
 	}
 
 	private async Task ExportListAsync() {
-		var filePath = await _dataService.ExportShoppingListAsync(CurrentShoppingList);
-		await Share.RequestAsync(new ShareFileRequest {
-			Title = "Eksport listy zakupów",
-			File = new ShareFile(filePath)
-		});
+		var xml = XmlSerializationHelper.SerializeToXml(CurrentShoppingList);
+		var fileName = $"shopping_list_{DateTime.UtcNow:yyyyMMddHHmmss}.xml";
+		
+		var filePath = await _fileSaver.SaveAsync(fileName, xml);
+		
+		if (filePath != null)
+		{
+			await _dialogService.ShowAlertAsync("Sukces", $"Zapisano plik: {filePath}");
+		}
 	}
 
 	private async Task ImportListAsync() {

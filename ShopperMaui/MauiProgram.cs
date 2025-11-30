@@ -19,6 +19,11 @@ public static class MauiProgram {
 		builder.Services.AddSingleton<IRecipeService, RecipeService>();
 		builder.Services.AddSingleton<IDialogService, DialogService>();
 		builder.Services.AddSingleton<INavigationService, NavigationService>();
+#if WINDOWS
+		builder.Services.AddSingleton<IFileSaver, ShopperMaui.Platforms.Windows.FileSaverService>();
+#else
+		builder.Services.AddSingleton<IFileSaver, FileSaverService>();
+#endif
 
 		builder.Services.AddSingleton<MainViewModel>();
 		builder.Services.AddTransient<StoreListViewModel>();
