@@ -7,5 +7,5 @@ public class Category {
 	public string Name { get; set; } = string.Empty;
 	public int SortOrder { get; set; }
 	public bool IsExpanded { get; set; } = true;
-	public ObservableCollection<Product> Products { get; set; } = new();
+	public ObservableCollection<Product> Products { get; set; } = [];
 }

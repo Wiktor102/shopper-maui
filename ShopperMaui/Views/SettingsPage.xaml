@@ -13,7 +13,7 @@
             <VerticalStackLayout Spacing="8">
                 <Label Text="Zarządzanie danymi" Style="{StaticResource SectionHeader}" />
                 
-                <Border Style="{StaticResource CardBorder}" Padding="0">
+                <Border Style="{StaticResource CardBorder}" Padding="0,8">
                     <Border.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding ManageDataCommand}" />
                     </Border.GestureRecognizers>

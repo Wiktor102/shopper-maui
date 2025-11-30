@@ -24,6 +24,7 @@ public static class DefaultDataProvider {
 			{
 				Name = "Sałatka grecka",
 				Description = "Klasyczna sałatka z fetą i oliwkami.",
+				Directions = "1. Pokrój pomidory, ogórka i cebulę w większą kostkę.\n2. Dodaj oliwki oraz pokruszoną fetę, a następnie dopraw solą i oregano.\n3. Skrop całość oliwą z oliwek i delikatnie wymieszaj tuż przed podaniem.",
 				Ingredients = new List<RecipeIngredient>
 				{
 					new() { ProductName = "Pomidor", Quantity = 3, Unit = "szt.", CategoryName = "Warzywa" },
@@ -36,6 +37,7 @@ public static class DefaultDataProvider {
 			{
 				Name = "Omlet",
 				Description = "Szybki omlet śniadaniowy.",
+				Directions = "1. Roztrzep jajka z odrobiną mleka, solą i pieprzem.\n2. Rozgrzej masło na patelni i wlej masę jajeczną, rozprowadzając ją równomiernie.\n3. Smaż na średnim ogniu, aż spód się zetnie, po czym złóż omlet na pół i podawaj od razu.",
 				Ingredients = new List<RecipeIngredient>
 				{
 					new() { ProductName = "Jajka", Quantity = 4, Unit = "szt.", CategoryName = "Nabiał" },

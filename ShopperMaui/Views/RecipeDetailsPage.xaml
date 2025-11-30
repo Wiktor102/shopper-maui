@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:ShopperMaui.ViewModels"
+             xmlns:models="clr-namespace:ShopperMaui.Models"
+             x:Class="ShopperMaui.Views.RecipeDetailsPage"
+             x:DataType="vm:RecipeDetailsViewModel"
+             Title="{Binding Title}">
+    <ScrollView>
+        <VerticalStackLayout Padding="16" Spacing="24">
+            <VerticalStackLayout Spacing="4">
+                <Label Text="{Binding RecipeName}" FontSize="24" FontAttributes="Bold" />
+                <Label Text="{Binding RecipeDescription}"
+                       TextColor="{StaticResource TextSecondary}"
+                       IsVisible="{Binding RecipeDescription, Converter={StaticResource StringNotNullOrEmptyConverter}}"
+                       LineBreakMode="WordWrap" />
+            </VerticalStackLayout>
+
+            <HorizontalStackLayout Spacing="12">
+                <Button Text="Dodaj do listy"
+                        Command="{Binding AddToShoppingListCommand}"/>
+                <Button Text="Edytuj"
+                        Style="{StaticResource SecondaryButton}"
+                        Command="{Binding EditRecipeCommand}"/>
+                <Button Text="Usuń"
+                        Style="{StaticResource DangerButton}"
+                        Command="{Binding DeleteRecipeCommand}"/>
+            </HorizontalStackLayout>
+
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="16">
+                <VerticalStackLayout Grid.Column="0" Spacing="8">
+                    <Label Text="Składniki" Style="{StaticResource SectionHeader}" Margin="0" />
+                    <CollectionView ItemsSource="{Binding Ingredients}"
+                                    SelectionMode="None"
+                                    EmptyView="Brak składników">
+                        <CollectionView.ItemsLayout>
+                            <LinearItemsLayout Orientation="Vertical" ItemSpacing="8" />
+                        </CollectionView.ItemsLayout>
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="models:RecipeIngredient">
+                                <Border Style="{StaticResource CardBorder}">
+                                    <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto" ColumnSpacing="12" RowSpacing="6">
+                                        <Label Grid.Row="0" Grid.Column="0" Text="{Binding ProductName}" FontAttributes="Bold" />
+                                        <Label Grid.Row="0" Grid.Column="1" Text="{Binding Quantity}" HorizontalTextAlignment="End" />
+                                        <Label Grid.Row="1" Grid.Column="0" Text="{Binding CategoryName}"
+                                               TextColor="{StaticResource TextSecondary}"
+                                               IsVisible="{Binding CategoryName, Converter={StaticResource StringNotNullOrEmptyConverter}}" />
+                                        <Label Grid.Row="1" Grid.Column="1" Text="{Binding Unit}" HorizontalTextAlignment="End" />
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Grid.Column="1" Spacing="8">
+                    <Label Text="Instrukcje" Style="{StaticResource SectionHeader}" Margin="0" />
+                    <Border Style="{StaticResource CardBorder}">
+                        <Label Text="{Binding RecipeDirections}"
+                               LineBreakMode="WordWrap" />
+                    </Border>
+                </VerticalStackLayout>
+            </Grid>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

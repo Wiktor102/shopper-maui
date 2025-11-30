@@ -2,18 +2,24 @@ using ShopperMaui.Helpers;
 using ShopperMaui.Models;
 using ShopperMaui.Services;
 using ShopperMaui.ViewModels.Commands;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using Microsoft.Maui.Controls;
 
 namespace ShopperMaui.ViewModels;
 
 public class RecipesViewModel : BaseViewModel {
 	private readonly IRecipeService _recipeService;
 	private readonly INavigationService _navigationService;
+	private readonly IDialogService _dialogService;
 	private readonly MainViewModel _mainViewModel;
 
-	public RecipesViewModel(IRecipeService recipeService, INavigationService navigationService, MainViewModel mainViewModel) {
+	public RecipesViewModel(IRecipeService recipeService, INavigationService navigationService, IDialogService dialogService, MainViewModel mainViewModel) {
 		_recipeService = recipeService;
 		_navigationService = navigationService;
+		_dialogService = dialogService;
 		_mainViewModel = mainViewModel;
 		Title = "Przepisy";
 
@@ -29,6 +35,13 @@ public class RecipesViewModel : BaseViewModel {
 		});
 		DeleteRecipeCommand = new AsyncRelayCommand(recipe => DeleteRecipeAsync(recipe as Recipe));
 		AddRecipeToListCommand = new AsyncRelayCommand(recipe => AddRecipeToListAsync(recipe as Recipe));
+		ViewRecipeDetailsCommand = new RelayCommand(recipe => {
+			if (recipe is Recipe model) {
+				_ = _navigationService.NavigateToAsync<RecipeDetailsViewModel>(new Dictionary<string, object> {
+					["recipeId"] = model.Id
+				});
+			}
+		});
 	}
 
 	public ObservableCollection<Recipe> Recipes { get; }
@@ -42,6 +55,8 @@ public class RecipesViewModel : BaseViewModel {
 	public AsyncRelayCommand DeleteRecipeCommand { get; }
 
 	public AsyncRelayCommand AddRecipeToListCommand { get; }
+
+	public RelayCommand ViewRecipeDetailsCommand { get; }
 
 	public async Task InitializeAsync() {
 		if (!Recipes.Any()) {
@@ -98,5 +113,8 @@ public class RecipesViewModel : BaseViewModel {
 
 			await _mainViewModel.AddProductAsync(targetCategory.Model.Id, product);
 		}
+
+		await _dialogService.ShowToastAsync($"Dodane składniki z przepisu '{recipe.Name}' do listy zakupów");
+		await Shell.Current.GoToAsync("///shoppingList");
 	}
 }

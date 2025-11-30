@@ -7,6 +7,6 @@ public class ShoppingList {
 	public string Name { get; set; } = "Lista Zakupów";
 	public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
 	public DateTime LastModified { get; set; } = DateTime.UtcNow;
-	public ObservableCollection<Category> Categories { get; set; } = new();
-	public ObservableCollection<string> Stores { get; set; } = new();
+	public ObservableCollection<Category> Categories { get; set; } = [];
+	public ObservableCollection<string> Stores { get; set; } = [];
 }

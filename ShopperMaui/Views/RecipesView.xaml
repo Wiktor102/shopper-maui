@@ -10,12 +10,20 @@
         <CollectionView x:Name="RecipesCollection"
                         ItemsSource="{Binding Recipes}"
                         SelectionMode="None"
-                        EmptyView="Brak przepisów">
+                        EmptyView="Brak przepisów"
+                        Margin="0,0,0,12">
+            <CollectionView.ItemsLayout>
+                <GridItemsLayout Orientation="Vertical"
+                                  Span="2"
+                                  HorizontalItemSpacing="12"
+                                  VerticalItemSpacing="12" />
+            </CollectionView.ItemsLayout>
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <controls:RecipeItemControl AddCommand="{Binding BindingContext.AddRecipeToListCommand, Source={x:Reference RecipesCollection}}"
                                                 EditCommand="{Binding BindingContext.EditRecipeCommand, Source={x:Reference RecipesCollection}}"
-                                                DeleteCommand="{Binding BindingContext.DeleteRecipeCommand, Source={x:Reference RecipesCollection}}" />
+                                                DeleteCommand="{Binding BindingContext.DeleteRecipeCommand, Source={x:Reference RecipesCollection}}"
+                                                OpenDetailsCommand="{Binding BindingContext.ViewRecipeDetailsCommand, Source={x:Reference RecipesCollection}}" />
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>

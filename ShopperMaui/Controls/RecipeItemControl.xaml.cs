@@ -16,6 +16,9 @@ public partial class RecipeItemControl : ContentView {
 	public static readonly BindableProperty DeleteCommandProperty = BindableProperty.Create(
 		nameof(DeleteCommand), typeof(ICommand), typeof(RecipeItemControl));
 
+	public static readonly BindableProperty OpenDetailsCommandProperty = BindableProperty.Create(
+		nameof(OpenDetailsCommand), typeof(ICommand), typeof(RecipeItemControl));
+
 	public ICommand? AddCommand {
 		get => (ICommand?)GetValue(AddCommandProperty);
 		set => SetValue(AddCommandProperty, value);
@@ -29,5 +32,10 @@ public partial class RecipeItemControl : ContentView {
 	public ICommand? DeleteCommand {
 		get => (ICommand?)GetValue(DeleteCommandProperty);
 		set => SetValue(DeleteCommandProperty, value);
+	}
+
+	public ICommand? OpenDetailsCommand {
+		get => (ICommand?)GetValue(OpenDetailsCommandProperty);
+		set => SetValue(OpenDetailsCommandProperty, value);
 	}
 }

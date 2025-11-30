@@ -25,6 +25,14 @@ public class DialogService : IDialogService {
 				: await page.DisplayPromptAsync(title, message, placeholder: placeholder);
 		});
 
+	public Task ShowToastAsync(string message)
+		=> MainThreadInvoke(async () => {
+			var page = GetActivePage();
+			if (page is not null) {
+				await page.DisplayAlert("", message, "OK");
+			}
+		});
+
 	private static Page? GetActivePage()
 		=> Application.Current?.Windows.FirstOrDefault()?.Page;
 

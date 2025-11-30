@@ -18,30 +18,35 @@
             </VerticalStackLayout>
 
             <VerticalStackLayout Spacing="8">
+                <Label Text="Instrukcje" Style="{StaticResource SectionHeader}" Margin="0"/>
+                <Editor Text="{Binding RecipeDirections}" Placeholder="Kroki przygotowania" AutoSize="TextChanges"/>
+            </VerticalStackLayout>
+
+            <VerticalStackLayout Spacing="8">
                 <Label Text="Składniki" Style="{StaticResource SectionHeader}" Margin="0"/>
                 <CollectionView x:Name="IngredientsCollection"
                                 ItemsSource="{Binding Ingredients}"
                                 SelectionMode="None">
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout Orientation="Vertical" ItemSpacing="8" />
+                    </CollectionView.ItemsLayout>
                     <CollectionView.ItemTemplate>
                         <DataTemplate x:DataType="vm:RecipeIngredientViewModel">
                             <Border Style="{StaticResource CardBorder}" Margin="0,0,0,8">
-                                <VerticalStackLayout Spacing="6">
-                                    <Entry Text="{Binding ProductName}" Placeholder="Nazwa składnika" />
-                                    <HorizontalStackLayout Spacing="8">
-                                        <Entry Text="{Binding Quantity}" WidthRequest="80" Keyboard="Numeric" />
-                                        <Picker ItemsSource="{Binding AvailableUnits}"
-                                                SelectedItem="{Binding Unit}"
-                                                WidthRequest="120" />
-                                    </HorizontalStackLayout>
-                                    <Entry Text="{Binding CategoryName}" Placeholder="Kategoria" />
-                                    <Button Text="Usuń"
+                                <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*,Auto,Auto" RowSpacing="8" ColumnSpacing="8">
+                                    <Entry Grid.Row="0" Grid.Column="0" Text="{Binding ProductName}" Placeholder="Nazwa składnika" />
+                                    <Entry Grid.Row="0" Grid.Column="1" Text="{Binding Quantity}" Keyboard="Numeric" />
+                                    <Picker Grid.Row="0" Grid.Column="2" ItemsSource="{Binding AvailableUnits}"
+                                            SelectedItem="{Binding Unit}" />
+                                    <Entry Grid.Row="1" Grid.Column="0" Text="{Binding CategoryName}" Placeholder="Kategoria" />
+                                    <Button Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Text="Usuń"
                                             Command="{Binding BindingContext.RemoveIngredientCommand, Source={x:Reference IngredientsCollection}}"
                                             CommandParameter="{Binding .}"
                                             Style="{StaticResource DangerButton}"
-                                            HorizontalOptions="End"
+                                            HorizontalOptions="Fill"
                                             HeightRequest="36"
                                             Padding="12,0"/>
-                                </VerticalStackLayout>
+                                </Grid>
                             </Border>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>

@@ -5,35 +5,61 @@
              x:Class="ShopperMaui.Controls.RecipeItemControl"
              x:Name="Root"
              x:DataType="models:Recipe">
-    <Border Style="{StaticResource CardBorder}" Margin="0,8">
-        <VerticalStackLayout Spacing="12">
-            <VerticalStackLayout Spacing="4">
-                  <Label Text="{Binding Name}"
-                       FontSize="18"
-                       FontAttributes="Bold" />
-                  <Label Text="{Binding Description}"
-                       TextColor="{StaticResource TextSecondary}"
-                       LineBreakMode="WordWrap" />
-            </VerticalStackLayout>
+    <Border x:Name="CardBorder"
+            Style="{StaticResource CardBorder}"
+            Margin="0">
+        <Border.GestureRecognizers>
+            <TapGestureRecognizer Command="{Binding OpenDetailsCommand, Source={x:Reference Root}}"
+                                  CommandParameter="{Binding .}"/>
+        </Border.GestureRecognizers>
 
-            <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8">
-                <Button Grid.Column="0"
-                    Text="Dodaj do listy"
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="CommonStates">
+                <VisualState x:Name="Normal">
+                    <VisualState.Setters>
+                        <Setter Property="Scale"
+                                Value="1"/>
+                        <Setter Property="Opacity"
+                                Value="1"/>
+                    </VisualState.Setters>
+                </VisualState>
+
+                <VisualState x:Name="PointerOver">
+                    <VisualState.Setters>
+                        <Setter Property="Scale"
+                                Value="1.02"/>
+                        <Setter Property="Opacity"
+                                Value="0.98"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+
+        <Grid RowDefinitions="Auto,Auto,Auto"
+                ColumnDefinitions="*,Auto"
+                ColumnSpacing="8"
+                RowSpacing="8">
+            <Label Grid.Row="0"
+                    Grid.Column="0"
+                   Text="{Binding Name}"
+                   FontSize="18"
+                   FontAttributes="Bold"
+                   LineBreakMode="TailTruncation"/>
+
+            <Button Grid.Row="0"
+                    Grid.Column="1"
+                    Grid.RowSpan="2"
+                    Text="+"
                     Command="{Binding AddCommand, Source={x:Reference Root}}"
-                    CommandParameter="{Binding .}"
-                        Style="{StaticResource SecondaryButton}" />
-                <Button Grid.Column="1"
-                        Text="Edytuj"
-                    Command="{Binding EditCommand, Source={x:Reference Root}}"
-                    CommandParameter="{Binding .}"
-                        Style="{StaticResource GhostButton}" />
-                <Button Grid.Column="2"
-                        Text="Usuń"
-                    Command="{Binding DeleteCommand, Source={x:Reference Root}}"
-                    CommandParameter="{Binding .}"
-                        Style="{StaticResource GhostButton}"
-                        TextColor="{StaticResource Danger}" />
-            </Grid>
-        </VerticalStackLayout>
+                    CommandParameter="{Binding .}"/>
+
+            <Label Grid.Row="1"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="1"
+                   Text="{Binding Description}"
+                   TextColor="{StaticResource TextMuted}"
+                   LineBreakMode="WordWrap"
+                   MaxLines="3"/>
+        </Grid>
     </Border>
 </ContentView>
