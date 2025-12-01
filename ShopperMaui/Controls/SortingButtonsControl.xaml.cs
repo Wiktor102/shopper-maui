@@ -1,3 +1,4 @@
+using ShopperMaui.Models;
 using System.Windows.Input;
 
 namespace ShopperMaui.Controls;
@@ -21,6 +22,14 @@ public partial class SortingButtonsControl : ContentView {
 			typeof(ICommand),
 			typeof(SortingButtonsControl));
 
+	public static readonly BindableProperty CurrentSortingProperty =
+		BindableProperty.Create(
+			nameof(CurrentSorting),
+			typeof(SortingPreference),
+			typeof(SortingButtonsControl),
+			SortingPreference.Category,
+			propertyChanged: OnCurrentSortingChanged);
+
 	public ICommand SortByCategoryCommand {
 		get => (ICommand)GetValue(SortByCategoryCommandProperty);
 		set => SetValue(SortByCategoryCommandProperty, value);
@@ -36,7 +45,23 @@ public partial class SortingButtonsControl : ContentView {
 		set => SetValue(SortByQuantityCommandProperty, value);
 	}
 
+	public SortingPreference CurrentSorting {
+		get => (SortingPreference)GetValue(CurrentSortingProperty);
+		set => SetValue(CurrentSortingProperty, value);
+	}
+
+	public bool IsCategorySelected => CurrentSorting == SortingPreference.Category;
+	public bool IsNameSelected => CurrentSorting == SortingPreference.Name;
+	public bool IsQuantitySelected => CurrentSorting == SortingPreference.Quantity;
+
 	public SortingButtonsControl() {
 		InitializeComponent();
+	}
+
+	private static void OnCurrentSortingChanged(BindableObject bindable, object oldValue, object newValue) {
+		var control = (SortingButtonsControl)bindable;
+		control.OnPropertyChanged(nameof(IsCategorySelected));
+		control.OnPropertyChanged(nameof(IsNameSelected));
+		control.OnPropertyChanged(nameof(IsQuantitySelected));
 	}
 }

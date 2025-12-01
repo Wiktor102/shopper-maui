@@ -23,6 +23,7 @@
              </Border>
 
             <controls:SortingButtonsControl
+                CurrentSorting="{Binding CurrentSorting}"
                 SortByCategoryCommand="{Binding SortByCategoryCommand}"
                 SortByNameCommand="{Binding SortByNameCommand}"
                 SortByQuantityCommand="{Binding SortByQuantityCommand}" />
