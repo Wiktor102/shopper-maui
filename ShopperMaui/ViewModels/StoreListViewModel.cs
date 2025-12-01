@@ -6,11 +6,12 @@ using System.Collections.Specialized;
 
 namespace ShopperMaui.ViewModels;
 
-public class StoreListViewModel : BaseViewModel {
+public class StoreListViewModel : BaseViewModel, IQueryAttributable {
 	private readonly MainViewModel _mainViewModel;
 	private string _selectedStore;
 	private SortingPreference _currentSorting = SortingPreference.Category;
 	private bool _isUpdatingSelection;
+	private string? _pendingStoreSelection;
 
 	public StoreListViewModel(MainViewModel mainViewModel) {
 		_mainViewModel = mainViewModel;
@@ -45,11 +46,13 @@ public class StoreListViewModel : BaseViewModel {
 				if (!string.Equals(_selectedStore, value, StringComparison.Ordinal)) {
 					_selectedStore = value;
 					OnPropertyChanged(nameof(SelectedStore));
+					UpdatePageTitle();
 				}
 				return;
 			}
 
 			if (SetProperty(ref _selectedStore, value)) {
+				UpdatePageTitle();
 				RefreshProducts();
 			}
 		}
@@ -71,8 +74,24 @@ public class StoreListViewModel : BaseViewModel {
 	public RelayCommand SortByQuantityCommand { get; }
 
 	public Task InitializeAsync() {
+		ApplyPendingStoreSelection();
 		RefreshProducts();
 		return Task.CompletedTask;
+	}
+
+	public void ApplyQueryAttributes(IDictionary<string, object> query) {
+		if (query is null || !query.TryGetValue(NavigationParameterKeys.StoreName, out var value)) {
+			return;
+		}
+
+		var storeName = value switch {
+			string direct => direct,
+			_ => value?.ToString()
+		};
+
+		if (!string.IsNullOrWhiteSpace(storeName)) {
+			_pendingStoreSelection = storeName;
+		}
 	}
 
 	private void OnStoresCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e) {
@@ -87,6 +106,7 @@ public class StoreListViewModel : BaseViewModel {
 	private void RefreshProducts() {
 		EnsureSelectedStoreIsValid();
 		var filtered = _mainViewModel.GetAllProducts()
+			.Where(p => !p.IsPurchased)
 			.Where(p => FilterByStore(p))
 			.Where(p => !string.IsNullOrWhiteSpace(p.Name))
 			.ToList();
@@ -121,6 +141,15 @@ public class StoreListViewModel : BaseViewModel {
 		SetSelectedStoreInternal(matchingSelection);
 	}
 
+	private void ApplyPendingStoreSelection() {
+		if (string.IsNullOrWhiteSpace(_pendingStoreSelection)) {
+			return;
+		}
+
+		SetSelectedStoreInternal(_pendingStoreSelection);
+		_pendingStoreSelection = null;
+	}
+
 	private void EnsureSelectedStoreIsValid() {
 		if (AvailableStores.Count == 0) {
 			RefreshAvailableStores();
@@ -143,18 +172,21 @@ public class StoreListViewModel : BaseViewModel {
 		try {
 			_selectedStore = value;
 			OnPropertyChanged(nameof(SelectedStore));
+			UpdatePageTitle();
 		} finally {
 			_isUpdatingSelection = false;
 		}
 	}
 
 	private bool FilterByStore(ProductViewModel product) {
-		if (SelectedStore == AllStoresLabel) {
-			return true;
-		}
-
+		if (SelectedStore == AllStoresLabel) return true;
 		return string.Equals(product.StoreName, SelectedStore, StringComparison.OrdinalIgnoreCase);
 	}
+
+	private void UpdatePageTitle()
+		=> Title = SelectedStore == AllStoresLabel
+			? "Widok sklepu"
+			: $"Widok sklepu – {SelectedStore}";
 
 	private static bool StoreNamesEqual(string left, string right)
 		=> string.Equals(left, right, StringComparison.OrdinalIgnoreCase);

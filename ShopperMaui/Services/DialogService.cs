@@ -25,6 +25,26 @@ public class DialogService : IDialogService {
 				: await page.DisplayPromptAsync(title, message, placeholder: placeholder);
 		});
 
+	public Task<string?> ShowSelectionAsync(string title, IEnumerable<string> options, string cancelButtonText)
+		=> MainThreadInvoke(async () => {
+			var page = GetActivePage();
+			if (page is null) {
+				return null;
+			}
+
+			var selection = options?
+				.Where(static option => !string.IsNullOrWhiteSpace(option))
+				.Distinct(StringComparer.OrdinalIgnoreCase)
+				.ToArray();
+
+			if (selection is null || selection.Length == 0) {
+				return null;
+			}
+
+			var choice = await page.DisplayActionSheet(title, cancelButtonText, null, selection);
+			return string.Equals(choice, cancelButtonText, StringComparison.Ordinal) ? null : choice;
+		});
+
 	public Task ShowToastAsync(string message)
 		=> MainThreadInvoke(async () => {
 			var page = GetActivePage();

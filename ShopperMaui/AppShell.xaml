@@ -16,10 +16,6 @@
             Route="recipesTab"
             ContentTemplate="{DataTemplate views:RecipesView}" />
         <ShellContent
-            Title="Sklepy"
-            Route="storeList"
-            ContentTemplate="{DataTemplate views:StoreListView}" />
-        <ShellContent
             Title="Ustawienia"
             Route="settings"
             ContentTemplate="{DataTemplate views:SettingsPage}" />

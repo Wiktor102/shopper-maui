@@ -7,6 +7,8 @@
              x:DataType="vm:MainViewModel"
              Title="Lista zakupów">
     <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Generuj listę sklepową"
+                     Command="{Binding GenerateStoreListCommand}" />
         <ToolbarItem Text="Niezakupione"
                      Command="{Binding NavigateToUnpurchasedViewCommand}" />
         <ToolbarItem Text="Eksportuj"

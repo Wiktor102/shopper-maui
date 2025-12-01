@@ -17,10 +17,10 @@ public partial class AppShell : Shell {
 		RegisterRoute<RecipeDetailsViewModel, RecipeDetailsPage>(navigationService, nameof(RecipeDetailsPage));
 		RegisterRoute<ManageDataViewModel, ManageDataPage>(navigationService, nameof(ManageDataPage));
 		RegisterRoute<UnpurchasedListViewModel, UnpurchasedListView>(navigationService, nameof(UnpurchasedListView));
+		RegisterRoute<StoreListViewModel, StoreListView>(navigationService, nameof(StoreListView));
 
 		navigationService.RegisterRoute<RecipesViewModel>("//recipesTab");
 		navigationService.RegisterRoute<MainViewModel>("//shoppingList");
-		navigationService.RegisterRoute<StoreListViewModel>("//storeList");
 		navigationService.RegisterRoute<SettingsViewModel>("//settings");
 	}
 

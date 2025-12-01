@@ -35,6 +35,7 @@ public class MainViewModel : BaseViewModel {
 		AddProductCommand = new AsyncRelayCommand(NavigateToAddProductAsync, () => !IsBusy, busy => IsBusy = busy);
 		ExportListCommand = new AsyncRelayCommand(ExportListAsync, () => !IsBusy, busy => IsBusy = busy);
 		ImportListCommand = new AsyncRelayCommand(ImportListAsync, () => !IsBusy, busy => IsBusy = busy);
+		GenerateStoreListCommand = new AsyncRelayCommand(GenerateStoreListAsync, () => !IsBusy, busy => IsBusy = busy);
 	}
 
 	public event EventHandler? ShoppingListUpdated;
@@ -65,6 +66,8 @@ public class MainViewModel : BaseViewModel {
 	public AsyncRelayCommand ExportListCommand { get; }
 
 	public AsyncRelayCommand ImportListCommand { get; }
+
+	public AsyncRelayCommand GenerateStoreListCommand { get; }
 
 	public async Task InitializeAsync() {
 		if (_isInitialized) return;
@@ -399,6 +402,24 @@ public class MainViewModel : BaseViewModel {
 
 	private static bool StoreNamesEqual(string? left, string? right)
 		=> string.Equals(left, right, StringComparison.OrdinalIgnoreCase);
+
+	private async Task GenerateStoreListAsync() {
+		if (!HasStores) {
+			await _dialogService.ShowAlertAsync("Brak sklepów", "Dodaj sklep, aby wygenerować listę.");
+			return;
+		}
+
+		var selectedStore = await _dialogService.ShowSelectionAsync("Wybierz sklep", Stores, "Anuluj");
+		if (string.IsNullOrWhiteSpace(selectedStore)) {
+			return;
+		}
+
+		var parameters = new Dictionary<string, object> {
+			[NavigationParameterKeys.StoreName] = selectedStore
+		};
+
+		await _navigationService.NavigateToAsync<StoreListViewModel>(parameters);
+	}
 
 	private Task NavigateToUnpurchasedViewAsync()
 		=> _navigationService.NavigateToAsync<UnpurchasedListViewModel>();

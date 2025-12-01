@@ -12,12 +12,15 @@
         <VerticalStackLayout Grid.Row="0"
                 Padding="16"
                 Spacing="12">
-            <Label Text="Filtruj po sklepie"
-                   Style="{StaticResource SectionHeader}"
-                   Margin="0,0,0,4"/>
-            <Picker ItemsSource="{Binding AvailableStores}"
-                    SelectedItem="{Binding SelectedStore}"
-                    Title="Sklep"/>
+             <Label Text="Wybrany sklep"
+                 Style="{StaticResource SectionHeader}"
+                 Margin="0,0,0,4"/>
+             <Border Style="{StaticResource CardBorder}">
+              <Label Text="{Binding SelectedStore}"
+                  FontAttributes="Bold"
+                  VerticalOptions="Center"
+                  Margin="12,6"/>
+             </Border>
 
             <Label Text="Sortuj po"
                     Style="{StaticResource SectionHeader}"
