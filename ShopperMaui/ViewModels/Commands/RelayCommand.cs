@@ -22,11 +22,18 @@ public class RelayCommand : ICommand {
 		_canExecute = canExecute;
 	}
 
+	// Protected constructor for derived classes that don't want to provide a synchronous
+	// action to execute (e.g. AsyncRelayCommand will override Execute).
+	protected RelayCommand(Func<object?, bool>? canExecute) {
+		_execute = _ => { };
+		_canExecute = canExecute;
+	}
+
 	public event EventHandler? CanExecuteChanged;
 
-	public bool CanExecute(object? parameter) => _canExecute?.Invoke(parameter) ?? true;
+	public virtual bool CanExecute(object? parameter) => _canExecute?.Invoke(parameter) ?? true;
 
-	public void Execute(object? parameter) => _execute(parameter);
+	public virtual void Execute(object? parameter) => _execute(parameter);
 
 	public void RaiseCanExecuteChanged() => CanExecuteChanged?.Invoke(this, EventArgs.Empty);
 }
