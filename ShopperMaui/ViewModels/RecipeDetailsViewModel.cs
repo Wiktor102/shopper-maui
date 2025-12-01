@@ -2,11 +2,7 @@ using ShopperMaui.Helpers;
 using ShopperMaui.Models;
 using ShopperMaui.Services;
 using ShopperMaui.ViewModels.Commands;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace ShopperMaui.ViewModels;
 

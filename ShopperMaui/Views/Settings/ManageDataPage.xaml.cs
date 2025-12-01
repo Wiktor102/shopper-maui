@@ -1,6 +1,6 @@
-using System.Windows.Input;
 using ShopperMaui.Helpers;
 using ShopperMaui.ViewModels;
+using System.Windows.Input;
 
 namespace ShopperMaui.Views;
 

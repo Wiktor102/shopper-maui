@@ -4,7 +4,6 @@ using ShopperMaui.Services;
 using ShopperMaui.ViewModels.Commands;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.Linq;
 
 namespace ShopperMaui.ViewModels;
 

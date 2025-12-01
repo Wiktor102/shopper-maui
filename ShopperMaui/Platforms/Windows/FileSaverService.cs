@@ -1,6 +1,6 @@
+using ShopperMaui.Services;
 using Windows.Storage;
 using Windows.Storage.Pickers;
-using ShopperMaui.Services;
 using WinRT.Interop;
 
 namespace ShopperMaui.Platforms.Windows;

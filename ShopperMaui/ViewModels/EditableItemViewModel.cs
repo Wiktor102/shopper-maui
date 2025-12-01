@@ -1,5 +1,5 @@
-using System.Windows.Input;
 using ShopperMaui.ViewModels.Commands;
+using System.Windows.Input;
 
 namespace ShopperMaui.ViewModels;
 

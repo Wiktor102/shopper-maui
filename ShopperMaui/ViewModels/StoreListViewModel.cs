@@ -1,10 +1,8 @@
 using ShopperMaui.Helpers;
 using ShopperMaui.Models;
 using ShopperMaui.ViewModels.Commands;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.Linq;
 
 namespace ShopperMaui.ViewModels;
 

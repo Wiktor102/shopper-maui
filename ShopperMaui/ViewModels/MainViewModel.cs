@@ -356,11 +356,10 @@ public class MainViewModel : BaseViewModel {
 	private async Task ExportListAsync() {
 		var xml = XmlSerializationHelper.SerializeToXml(CurrentShoppingList);
 		var fileName = $"shopping_list_{DateTime.UtcNow:yyyyMMddHHmmss}.xml";
-		
+
 		var filePath = await _fileSaver.SaveAsync(fileName, xml);
-		
-		if (filePath != null)
-		{
+
+		if (filePath != null) {
 			await _dialogService.ShowAlertAsync("Sukces", $"Zapisano plik: {filePath}");
 		}
 	}

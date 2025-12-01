@@ -1,4 +1,4 @@
-﻿using UIKit;
+using UIKit;
 
 namespace ShopperMaui {
 	public class Program {

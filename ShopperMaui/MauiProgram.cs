@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using ShopperMaui.Helpers;
 using ShopperMaui.Services;
 using ShopperMaui.ViewModels;
