@@ -22,26 +22,10 @@
                   Margin="12,6"/>
              </Border>
 
-            <Label Text="Sortuj po"
-                    Style="{StaticResource SectionHeader}"
-                    Margin="0,8,0,4"/>
-            <HorizontalStackLayout Spacing="8">
-                <Button Text="Kategoria"
-                        Command="{Binding SortByCategoryCommand}"
-                        Style="{StaticResource OutlineButton}"
-                        HeightRequest="36"
-                        Padding="12,0"/>
-                <Button Text="Nazwa"
-                        Command="{Binding SortByNameCommand}"
-                        Style="{StaticResource OutlineButton}"
-                        HeightRequest="36"
-                        Padding="12,0"/>
-                <Button Text="Ilość"
-                        Command="{Binding SortByQuantityCommand}"
-                        Style="{StaticResource OutlineButton}"
-                        HeightRequest="36"
-                        Padding="12,0"/>
-            </HorizontalStackLayout>
+            <controls:SortingButtonsControl
+                SortByCategoryCommand="{Binding SortByCategoryCommand}"
+                SortByNameCommand="{Binding SortByNameCommand}"
+                SortByQuantityCommand="{Binding SortByQuantityCommand}" />
         </VerticalStackLayout>
 
         <CollectionView Grid.Row="1"

@@ -1,11 +1,10 @@
-using ShopperMaui.Helpers;
 using ShopperMaui.Models;
 using ShopperMaui.ViewModels.Commands;
 using System.Collections.ObjectModel;
 
 namespace ShopperMaui.ViewModels;
 
-public class UnpurchasedListViewModel : BaseViewModel {
+public class UnpurchasedListViewModel : BaseViewModel, ISortableProductsViewModel {
 	private readonly MainViewModel _mainViewModel;
 	private SortingPreference _currentSorting = SortingPreference.Category;
 
@@ -52,11 +51,7 @@ public class UnpurchasedListViewModel : BaseViewModel {
 			.Where(p => !p.IsPurchased)
 			.ToList();
 
-		filtered = CurrentSorting switch {
-			SortingPreference.Name => SortingHelper.SortByName(filtered),
-			SortingPreference.Quantity => SortingHelper.SortByQuantity(filtered),
-			_ => SortingHelper.SortByCategory(filtered)
-		};
+		filtered = filtered.ApplySorting(CurrentSorting);
 
 		UnpurchasedProducts.Clear();
 		foreach (var product in filtered) {

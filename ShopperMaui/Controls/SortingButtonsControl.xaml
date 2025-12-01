@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ShopperMaui.Controls.SortingButtonsControl"
+             x:Name="SortingControl">
+    <VerticalStackLayout Spacing="12">
+        <Label Text="Sortuj po"
+               Style="{StaticResource SectionHeader}"
+               Margin="0,0,0,4" />
+        <HorizontalStackLayout Spacing="8">
+            <Button Text="Kategoria"
+                    Command="{Binding Source={x:Reference SortingControl}, Path=SortByCategoryCommand}"
+                    Style="{StaticResource OutlineButton}"
+                    HeightRequest="36"
+                    Padding="12,0" />
+            <Button Text="Nazwa"
+                    Command="{Binding Source={x:Reference SortingControl}, Path=SortByNameCommand}"
+                    Style="{StaticResource OutlineButton}"
+                    HeightRequest="36"
+                    Padding="12,0" />
+            <Button Text="Ilość"
+                    Command="{Binding Source={x:Reference SortingControl}, Path=SortByQuantityCommand}"
+                    Style="{StaticResource OutlineButton}"
+                    HeightRequest="36"
+                    Padding="12,0" />
+        </HorizontalStackLayout>
+    </VerticalStackLayout>
+</ContentView>

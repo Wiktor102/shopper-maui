@@ -6,7 +6,7 @@ using System.Collections.Specialized;
 
 namespace ShopperMaui.ViewModels;
 
-public class StoreListViewModel : BaseViewModel, IQueryAttributable {
+public class StoreListViewModel : BaseViewModel, IQueryAttributable, ISortableProductsViewModel {
 	private readonly MainViewModel _mainViewModel;
 	private string _selectedStore;
 	private SortingPreference _currentSorting = SortingPreference.Category;
@@ -111,11 +111,7 @@ public class StoreListViewModel : BaseViewModel, IQueryAttributable {
 			.Where(p => !string.IsNullOrWhiteSpace(p.Name))
 			.ToList();
 
-		filtered = CurrentSorting switch {
-			SortingPreference.Name => SortingHelper.SortByName(filtered),
-			SortingPreference.Quantity => SortingHelper.SortByQuantity(filtered),
-			_ => SortingHelper.SortByCategory(filtered)
-		};
+		filtered = filtered.ApplySorting(CurrentSorting);
 
 		FilteredProducts.Clear();
 		foreach (var product in filtered) {
