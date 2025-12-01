@@ -129,7 +129,16 @@ public class CategoryViewModel : BaseViewModel {
 			_dialogService,
 			productViewModel => _mainViewModel.HandleProductChangedAsync(productViewModel),
 			productViewModel => _mainViewModel.HandleProductChangedAsync(productViewModel),
-			productViewModel => _mainViewModel.DeleteProductAsync(productViewModel));
+			productViewModel => _mainViewModel.DeleteProductAsync(productViewModel),
+			productViewModel => _mainViewModel.EditProductAsync(productViewModel));
+
+	internal void AddExistingProduct(ProductViewModel productViewModel) {
+		productViewModel.UpdateParentCategory(this);
+		productViewModel.Model.CategoryId = _model.Id;
+		_model.Products.Add(productViewModel.Model);
+		Products.Add(productViewModel);
+		RefreshProductOrdering();
+	}
 
 	private async Task DeleteCategoryAsync() {
 		var confirm = await _dialogService.ShowConfirmAsync("Usuń kategorię", $"Czy na pewno chcesz usunąć {Name}?");

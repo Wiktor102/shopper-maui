@@ -8,11 +8,12 @@ namespace ShopperMaui.ViewModels;
 
 public class ProductViewModel : BaseViewModel {
 	private readonly Product _model;
-	private readonly CategoryViewModel _category;
+	private CategoryViewModel _category;
 	private readonly IDialogService _dialogService;
 	private readonly Func<ProductViewModel, Task>? _onChanged;
 	private readonly Func<ProductViewModel, Task>? _onPurchasedChanged;
 	private readonly Func<ProductViewModel, Task>? _onDelete;
+	private readonly Func<ProductViewModel, Task>? _onEdit;
 
 	private string _name;
 	private decimal _quantity;
@@ -27,13 +28,15 @@ public class ProductViewModel : BaseViewModel {
 		IDialogService dialogService,
 		Func<ProductViewModel, Task>? onChanged,
 		Func<ProductViewModel, Task>? onPurchasedChanged,
-		Func<ProductViewModel, Task>? onDelete) {
+		Func<ProductViewModel, Task>? onDelete,
+		Func<ProductViewModel, Task>? onEdit = null) {
 		_model = model;
 		_category = category;
 		_dialogService = dialogService;
 		_onChanged = onChanged;
 		_onPurchasedChanged = onPurchasedChanged;
 		_onDelete = onDelete;
+		_onEdit = onEdit;
 
 		_name = _model.Name;
 		_quantity = _model.Quantity;
@@ -47,6 +50,7 @@ public class ProductViewModel : BaseViewModel {
 		TogglePurchasedCommand = new RelayCommand(TogglePurchased);
 		ToggleOptionalCommand = new RelayCommand(ToggleOptional);
 		DeleteProductCommand = new AsyncRelayCommand(DeleteProductAsync);
+		EditProductCommand = new AsyncRelayCommand(EditProductAsync);
 		ClearStoreCommand = new RelayCommand(() => StoreName = null);
 	}
 
@@ -113,9 +117,17 @@ public class ProductViewModel : BaseViewModel {
 			if (SetProperty(ref _storeName, value)) {
 				_model.StoreName = value;
 				_ = NotifyChangedAsync();
+				OnPropertyChanged(nameof(HasStore));
+				OnPropertyChanged(nameof(StoreDisplayText));
 			}
 		}
 	}
+
+	public bool HasStore => !string.IsNullOrWhiteSpace(StoreName);
+
+	public string StoreDisplayText => string.IsNullOrWhiteSpace(StoreName)
+		? "Brak sklepu"
+		: StoreName!;
 
 	public IReadOnlyList<string> AvailableUnits => Constants.AvailableUnits;
 
@@ -131,9 +143,18 @@ public class ProductViewModel : BaseViewModel {
 
 	public AsyncRelayCommand DeleteProductCommand { get; }
 
+	public AsyncRelayCommand EditProductCommand { get; }
+
 	public RelayCommand ClearStoreCommand { get; }
 
 	public void RefreshCategoryName() => OnPropertyChanged(nameof(CategoryName));
+
+	internal void UpdateParentCategory(CategoryViewModel category) {
+		_category = category;
+		OnPropertyChanged(nameof(ParentCategory));
+		OnPropertyChanged(nameof(CategoryName));
+		OnPropertyChanged(nameof(AvailableStores));
+	}
 
 	private void IncreaseQuantity() => Quantity += 1;
 
@@ -164,6 +185,8 @@ public class ProductViewModel : BaseViewModel {
 
 	private Task NotifyPurchasedChangedAsync() => _onPurchasedChanged?.Invoke(this) ?? Task.CompletedTask;
 
+	private Task EditProductAsync() => _onEdit?.Invoke(this) ?? Task.CompletedTask;
+
 	internal void UpdateStoreNameFromManager(string? storeName) {
 		if (string.Equals(_storeName, storeName, StringComparison.Ordinal)) {
 			return;
@@ -172,5 +195,7 @@ public class ProductViewModel : BaseViewModel {
 		_storeName = storeName;
 		_model.StoreName = storeName;
 		OnPropertyChanged(nameof(StoreName));
+		OnPropertyChanged(nameof(HasStore));
+		OnPropertyChanged(nameof(StoreDisplayText));
 	}
 }

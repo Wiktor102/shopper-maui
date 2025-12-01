@@ -17,11 +17,14 @@ public class AddProductViewModel : BaseViewModel, IQueryAttributable {
 	private bool _isOptional;
 	private string? _storeName;
 	private CategoryViewModel? _selectedCategory;
+	private ProductViewModel? _editingProduct;
+	private bool _isEditMode;
+	private string _pageTitle = "Dodaj produkt";
 
 	public AddProductViewModel(MainViewModel mainViewModel, INavigationService navigationService) {
 		_mainViewModel = mainViewModel;
 		_navigationService = navigationService;
-		Title = "Dodaj produkt";
+		Title = _pageTitle;
 
 		SaveProductCommand = new AsyncRelayCommand(SaveProductAsync, () => !IsBusy, busy => IsBusy = busy);
 		CancelCommand = new RelayCommand(() => _ = _navigationService.GoBackAsync());
@@ -41,6 +44,11 @@ public class AddProductViewModel : BaseViewModel, IQueryAttributable {
 	}
 
 	public Product Model { get; private set; } = new();
+
+	public string PageTitle {
+		get => _pageTitle;
+		private set => SetProperty(ref _pageTitle, value);
+	}
 
 	public ObservableCollection<CategoryViewModel> AvailableCategories => _mainViewModel.Categories;
 
@@ -95,14 +103,21 @@ public class AddProductViewModel : BaseViewModel, IQueryAttributable {
 	public RelayCommand ClearStoreSelectionCommand { get; }
 
 	public void ApplyQueryAttributes(IDictionary<string, object> query) {
-		if (query.TryGetValue("categoryId", out var value)) {
-			if (value is Guid guid) {
-				_targetCategoryId = guid;
-			} else if (value is string idString && Guid.TryParse(idString, out var parsed)) {
-				_targetCategoryId = parsed;
-			}
+		if (TryExtractGuid(query, "productId", out var productId)) {
+			LoadProductForEdit(productId);
+			return;
+		}
 
+		_isEditMode = false;
+		_editingProduct = null;
+		PageTitle = "Dodaj produkt";
+		Title = PageTitle;
+
+		if (TryExtractGuid(query, "categoryId", out var categoryId)) {
+			_targetCategoryId = categoryId;
 			SelectedCategory = _mainViewModel.Categories.FirstOrDefault(c => c.Model.Id == _targetCategoryId);
+		} else if (SelectedCategory is null && _mainViewModel.Categories.Any()) {
+			SelectedCategory = _mainViewModel.Categories.First();
 		}
 	}
 
@@ -119,6 +134,11 @@ public class AddProductViewModel : BaseViewModel, IQueryAttributable {
 
 		if (_targetCategoryId is null) {
 			ErrorMessage = "Wybierz kategorię.";
+			return;
+		}
+
+		if (_isEditMode) {
+			await UpdateExistingProductAsync();
 			return;
 		}
 
@@ -144,6 +164,74 @@ public class AddProductViewModel : BaseViewModel, IQueryAttributable {
 		StoreName = null;
 		ErrorMessage = string.Empty;
 		await _navigationService.GoBackAsync();
+	}
+
+	private async Task UpdateExistingProductAsync() {
+		if (_editingProduct is null || _targetCategoryId is null) {
+			ErrorMessage = "Nie udało się zaktualizować produktu.";
+			return;
+		}
+
+		var normalizedStore = string.IsNullOrWhiteSpace(StoreName) ? null : StoreName.Trim();
+		_editingProduct.Name = ProductName.Trim();
+		_editingProduct.Quantity = Quantity;
+		_editingProduct.Unit = SelectedUnit;
+		_editingProduct.IsOptional = IsOptional;
+		_editingProduct.StoreName = normalizedStore;
+
+		var targetCategory = _mainViewModel.Categories.FirstOrDefault(c => c.Model.Id == _targetCategoryId);
+		if (targetCategory is null) {
+			ErrorMessage = "Nie znaleziono kategorii.";
+			return;
+		}
+
+		if (!ReferenceEquals(_editingProduct.ParentCategory, targetCategory)) {
+			await _mainViewModel.MoveProductAsync(_editingProduct, targetCategory);
+		} else {
+			await _mainViewModel.SaveAsync();
+		}
+
+		await _navigationService.GoBackAsync();
+	}
+
+	private void LoadProductForEdit(Guid productId) {
+		var product = _mainViewModel
+			.GetAllProducts()
+			.FirstOrDefault(p => p.Model.Id == productId);
+
+		if (product is null) {
+			ErrorMessage = "Nie znaleziono produktu do edycji.";
+			return;
+		}
+
+		_editingProduct = product;
+		_isEditMode = true;
+		PageTitle = "Edytuj produkt";
+		Title = PageTitle;
+		ProductName = product.Name;
+		Quantity = product.Quantity;
+		SelectedUnit = product.Unit;
+		IsOptional = product.IsOptional;
+		StoreName = product.StoreName;
+		SelectedCategory = product.ParentCategory;
+		_targetCategoryId = product.ParentCategory.Model.Id;
+	}
+
+	private static bool TryExtractGuid(IDictionary<string, object> query, string key, out Guid guid) {
+		if (query.TryGetValue(key, out var value)) {
+			if (value is Guid direct) {
+				guid = direct;
+				return true;
+			}
+
+			if (value is string stringValue && Guid.TryParse(stringValue, out var parsed)) {
+				guid = parsed;
+				return true;
+			}
+		}
+
+		guid = Guid.Empty;
+		return false;
 	}
 
 	private void OnStoresCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e) {

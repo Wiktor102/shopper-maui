@@ -32,7 +32,8 @@
                     <Label Text="Składniki" Style="{StaticResource SectionHeader}" Margin="0" />
                     <CollectionView ItemsSource="{Binding Ingredients}"
                                     SelectionMode="None"
-                                    EmptyView="Brak składników">
+                                    EmptyView="Brak składników"
+                                    MaximumHeightRequest="300">
                         <CollectionView.ItemsLayout>
                             <LinearItemsLayout Orientation="Vertical" ItemSpacing="8" />
                         </CollectionView.ItemsLayout>

@@ -252,6 +252,11 @@ public class MainViewModel : BaseViewModel {
 		return true;
 	}
 
+	internal Task EditProductAsync(ProductViewModel productViewModel)
+		=> _navigationService.NavigateToAsync<AddProductViewModel>(new Dictionary<string, object> {
+			["productId"] = productViewModel.Model.Id
+		});
+
 	internal Task NavigateToAddProductAsync(CategoryViewModel category)
 		=> _navigationService.NavigateToAsync<AddProductViewModel>(new Dictionary<string, object> {
 			["categoryId"] = category.Model.Id
@@ -277,6 +282,18 @@ public class MainViewModel : BaseViewModel {
 
 	internal async Task DeleteProductAsync(ProductViewModel productViewModel) {
 		productViewModel.ParentCategory.RemoveProduct(productViewModel);
+		await SaveAsync();
+	}
+
+	internal async Task MoveProductAsync(ProductViewModel productViewModel, CategoryViewModel targetCategory) {
+		if (productViewModel.ParentCategory == targetCategory) {
+			await SaveAsync();
+			return;
+		}
+
+		var sourceCategory = productViewModel.ParentCategory;
+		sourceCategory.RemoveProduct(productViewModel);
+		targetCategory.AddExistingProduct(productViewModel);
 		await SaveAsync();
 	}
 

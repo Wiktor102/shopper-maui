@@ -4,7 +4,7 @@
              xmlns:vm="clr-namespace:ShopperMaui.ViewModels"
              x:Class="ShopperMaui.Views.AddProductPage"
              x:DataType="vm:AddProductViewModel"
-             Title="Dodaj produkt">
+             Title="{Binding PageTitle}">
     <ScrollView>
         <VerticalStackLayout Padding="16"
                              Spacing="24">

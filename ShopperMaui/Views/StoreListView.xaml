@@ -6,29 +6,55 @@
              x:Class="ShopperMaui.Views.StoreListView"
              x:DataType="vm:StoreListViewModel"
              Title="Widok sklepu">
-    <VerticalStackLayout Padding="16" Spacing="12">
-        <Label Text="Filtruj po sklepie"
-               Style="{StaticResource SectionHeader}"
-               Margin="0,0,0,4" />
-        <Picker ItemsSource="{Binding AvailableStores}"
-                SelectedItem="{Binding SelectedStore}"
-                Title="Sklep" />
+    <Grid Padding="0"
+            RowDefinitions="Auto,*"
+            ColumnDefinitions="*">
+        <VerticalStackLayout Grid.Row="0"
+                Padding="16"
+                Spacing="12">
+            <Label Text="Filtruj po sklepie"
+                   Style="{StaticResource SectionHeader}"
+                   Margin="0,0,0,4"/>
+            <Picker ItemsSource="{Binding AvailableStores}"
+                    SelectedItem="{Binding SelectedStore}"
+                    Title="Sklep"/>
 
-        <Label Text="Sortuj po" Style="{StaticResource SectionHeader}" Margin="0,8,0,4" />
-        <HorizontalStackLayout Spacing="8">
-            <Button Text="Kategoria" Command="{Binding SortByCategoryCommand}" Style="{StaticResource OutlineButton}" HeightRequest="36" Padding="12,0"/>
-            <Button Text="Nazwa" Command="{Binding SortByNameCommand}" Style="{StaticResource OutlineButton}" HeightRequest="36" Padding="12,0"/>
-            <Button Text="Ilość" Command="{Binding SortByQuantityCommand}" Style="{StaticResource OutlineButton}" HeightRequest="36" Padding="12,0"/>
-        </HorizontalStackLayout>
+            <Label Text="Sortuj po"
+                    Style="{StaticResource SectionHeader}"
+                    Margin="0,8,0,4"/>
+            <HorizontalStackLayout Spacing="8">
+                <Button Text="Kategoria"
+                        Command="{Binding SortByCategoryCommand}"
+                        Style="{StaticResource OutlineButton}"
+                        HeightRequest="36"
+                        Padding="12,0"/>
+                <Button Text="Nazwa"
+                        Command="{Binding SortByNameCommand}"
+                        Style="{StaticResource OutlineButton}"
+                        HeightRequest="36"
+                        Padding="12,0"/>
+                <Button Text="Ilość"
+                        Command="{Binding SortByQuantityCommand}"
+                        Style="{StaticResource OutlineButton}"
+                        HeightRequest="36"
+                        Padding="12,0"/>
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
 
-        <CollectionView ItemsSource="{Binding FilteredProducts}"
+        <CollectionView Grid.Row="1"
+                        ItemsSource="{Binding FilteredProducts}"
                         SelectionMode="None"
-                        EmptyView="Brak produktów dla wybranego sklepu.">
+                        EmptyView="Brak produktów dla wybranego sklepu."
+                        Margin="16,0">
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout Orientation="Vertical"
+                        ItemSpacing="8"/>
+            </CollectionView.ItemsLayout>
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <controls:ProductControl />
+                    <controls:ProductControl/>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
-    </VerticalStackLayout>
+    </Grid>
 </ContentPage>

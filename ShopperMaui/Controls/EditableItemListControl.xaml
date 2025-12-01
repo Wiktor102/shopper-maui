@@ -5,9 +5,10 @@
              x:Class="ShopperMaui.Controls.EditableItemListControl"
              x:Name="Root">
 
-    <Grid>
+    <Grid RowDefinitions="*">
         <!-- Items List -->
-        <CollectionView ItemsSource="{Binding Source={x:Reference Root}, Path=ItemsSource}"
+        <CollectionView Grid.Row="0"
+                        ItemsSource="{Binding Source={x:Reference Root}, Path=ItemsSource}"
                         SelectionMode="None"
                         IsVisible="{Binding Source={x:Reference Root}, Path=HasItems}">
             <CollectionView.ItemsLayout>
@@ -48,7 +49,8 @@
         </CollectionView>
 
         <!-- Empty State -->
-        <VerticalStackLayout IsVisible="{Binding Source={x:Reference Root}, Path=HasItems, Converter={StaticResource InverseBooleanConverter}}"
+        <VerticalStackLayout Grid.Row="0"
+                             IsVisible="{Binding Source={x:Reference Root}, Path=HasItems, Converter={StaticResource InverseBooleanConverter}}"
                              VerticalOptions="Center"
                              HorizontalOptions="Fill"
                              Spacing="16">
