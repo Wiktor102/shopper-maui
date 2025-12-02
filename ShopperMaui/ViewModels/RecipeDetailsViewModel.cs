@@ -1,6 +1,6 @@
 using ShopperMaui.Helpers;
 using ShopperMaui.Models;
-using ShopperMaui.Services;
+using ShopperMaui.Services.Interfaces;
 using ShopperMaui.ViewModels.Commands;
 using System.Collections.ObjectModel;
 

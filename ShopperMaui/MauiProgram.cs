@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Logging;
 using ShopperMaui.Helpers;
 using ShopperMaui.Services;
+using ShopperMaui.Services.Interfaces;
 using ShopperMaui.ViewModels;
 
 namespace ShopperMaui;

@@ -1,3 +1,5 @@
+using ShopperMaui.Services.Interfaces;
+
 namespace ShopperMaui.Services;
 
 public class NavigationService : INavigationService {

@@ -1,4 +1,4 @@
-using ShopperMaui.Services;
+using ShopperMaui.Services.Interfaces;
 using ShopperMaui.ViewModels.Commands;
 
 namespace ShopperMaui.ViewModels;

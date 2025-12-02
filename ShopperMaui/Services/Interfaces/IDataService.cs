@@ -1,6 +1,6 @@
 using ShopperMaui.Models;
 
-namespace ShopperMaui.Services;
+namespace ShopperMaui.Services.Interfaces;
 
 public interface IDataService {
 	Task<ShoppingList> LoadShoppingListAsync();

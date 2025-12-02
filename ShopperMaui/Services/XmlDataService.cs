@@ -1,5 +1,6 @@
 using ShopperMaui.Helpers;
 using ShopperMaui.Models;
+using ShopperMaui.Services.Interfaces;
 
 namespace ShopperMaui.Services;
 

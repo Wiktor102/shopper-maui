@@ -1,4 +1,4 @@
-﻿using ShopperMaui.Services;
+﻿using ShopperMaui.Services.Interfaces;
 using ShopperMaui.ViewModels;
 using ShopperMaui.Views;
 
