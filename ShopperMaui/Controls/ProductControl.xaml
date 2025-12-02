@@ -4,119 +4,123 @@
              xmlns:vm="clr-namespace:ShopperMaui.ViewModels"
              x:Class="ShopperMaui.Controls.ProductControl"
              x:DataType="vm:ProductViewModel">
-        <Border Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource PrimaryLight}}" 
-                        StrokeThickness="1" 
-                        StrokeShape="RoundRectangle 8" 
-                        Padding="8" 
-                        Margin="0,4" 
-                        BackgroundColor="{AppThemeBinding Light={StaticResource CardBackground}, Dark={StaticResource CardBackgroundDark}}">
-                <Grid ColumnDefinitions="Auto,*,Auto,Auto,Auto,Auto"
-                          ColumnSpacing="8"
-                          VerticalOptions="Center">
-                        <CheckBox Grid.Column="0"
-                                          IsChecked="{Binding IsPurchased}"
-                                          VerticalOptions="Center"/>
+    <Border Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource PrimaryLight}}"
+            StrokeThickness="1"
+            StrokeShape="RoundRectangle 8"
+            Padding="8"
+            Margin="0,4"
+            BackgroundColor="{AppThemeBinding Light={StaticResource CardBackground}, Dark={StaticResource CardBackgroundDark}}">
+        <Grid ColumnDefinitions="Auto,*,Auto,Auto,Auto,Auto"
+              ColumnSpacing="8"
+              VerticalOptions="Center">
+            <CheckBox Grid.Column="0"
+                      IsChecked="{Binding IsPurchased}"
+                      VerticalOptions="Center"/>
 
-                        <VerticalStackLayout Grid.Column="1"
-                                                                 Spacing="2"
-                                                                 VerticalOptions="Center">
-                                <Label Text="{Binding Name}"
-                                           FontAttributes="Bold"
-                                           FontSize="14"
-                                           LineBreakMode="TailTruncation">
-                                        <Label.Triggers>
-                                                <DataTrigger TargetType="Label"
-                                                                         Binding="{Binding IsPurchased}"
-                                                                         Value="True">
-                                                        <Setter Property="TextDecorations" Value="Strikethrough" />
-                                                        <Setter Property="TextColor" Value="{StaticResource TextMuted}" />
-                                                </DataTrigger>
-                                        </Label.Triggers>
-                                </Label>
+            <VerticalStackLayout Grid.Column="1"
+                                 Spacing="2"
+                                 VerticalOptions="Center">
+                <Label Text="{Binding Name}"
+                       FontAttributes="Bold"
+                       FontSize="14"
+                       LineBreakMode="TailTruncation">
+                    <Label.Triggers>
+                        <DataTrigger TargetType="Label"
+                                     Binding="{Binding IsPurchased}"
+                                     Value="True">
+                            <Setter Property="TextDecorations"
+                                    Value="Strikethrough"/>
+                            <Setter Property="TextColor"
+                                    Value="{StaticResource TextMuted}"/>
+                        </DataTrigger>
+                    </Label.Triggers>
+                </Label>
 
-                                <HorizontalStackLayout Spacing="6"
-                                                                           VerticalOptions="Center">
-                                        <Label Text="{Binding StoreDisplayText}"
-                                                   FontSize="12"
-                                                   TextColor="{StaticResource TextSecondary}">
-                                                <Label.Triggers>
-                                                        <DataTrigger TargetType="Label"
-                                                                                 Binding="{Binding HasStore}"
-                                                                                 Value="False">
-                                                                <Setter Property="TextColor" Value="{StaticResource TextMuted}" />
-                                                                <Setter Property="FontAttributes" Value="Italic" />
-                                                        </DataTrigger>
-                                                </Label.Triggers>
-                                        </Label>
-                                        <Label Text="•"
-                                                   FontSize="12"
-                                                   TextColor="{StaticResource TextMuted}"
-                                                   IsVisible="{Binding IsOptional}"/>
-                                        <Label Text="Opcjonalny"
-                                                   FontSize="11"
-                                                   TextColor="{StaticResource TextMuted}"
-                                                   IsVisible="{Binding IsOptional}"/>
-                                </HorizontalStackLayout>
-                        </VerticalStackLayout>
+                <HorizontalStackLayout Spacing="6"
+                                       VerticalOptions="Center">
+                    <Label Text="{Binding SecondaryDisplayText}"
+                           FontSize="12"
+                           TextColor="{StaticResource TextSecondary}">
+                        <Label.Triggers>
+                            <DataTrigger TargetType="Label"
+                                         Binding="{Binding HasSecondaryInfo}"
+                                         Value="False">
+                                <Setter Property="TextColor"
+                                        Value="{StaticResource TextMuted}"/>
+                                <Setter Property="FontAttributes"
+                                        Value="Italic"/>
+                            </DataTrigger>
+                        </Label.Triggers>
+                    </Label>
+                    <Label Text="•"
+                           FontSize="12"
+                           TextColor="{StaticResource TextMuted}"
+                           IsVisible="{Binding IsOptional}"/>
+                    <Label Text="Opcjonalny"
+                           FontSize="11"
+                           TextColor="{StaticResource TextMuted}"
+                           IsVisible="{Binding IsOptional}"/>
+                </HorizontalStackLayout>
+            </VerticalStackLayout>
 
-                        <HorizontalStackLayout Grid.Column="2"
-                                                                   Spacing="0"
-                                                                   VerticalOptions="Center">
-                                <Button Text="-"
-                                                Command="{Binding DecreaseQuantityCommand}"
-                                                Style="{StaticResource GhostButton}"
-                                                WidthRequest="32"
-                                                HeightRequest="32"
-                                                Padding="0"/>
-                                <Label Text="{Binding Quantity}"
-                                           WidthRequest="30"
-                                           HorizontalTextAlignment="Center"
-                                           VerticalTextAlignment="Center"
-                                           FontAttributes="Bold"/>
-                                <Button Text="+"
-                                                Command="{Binding IncreaseQuantityCommand}"
-                                                Style="{StaticResource GhostButton}"
-                                                WidthRequest="32"
-                                                HeightRequest="32"
-                                                Padding="0"/>
-                        </HorizontalStackLayout>
+            <HorizontalStackLayout Grid.Column="2"
+                                   Spacing="0"
+                                   VerticalOptions="Center">
+                <Button Text="-"
+                        Command="{Binding DecreaseQuantityCommand}"
+                        Style="{StaticResource GhostButton}"
+                        WidthRequest="32"
+                        HeightRequest="32"
+                        Padding="0"/>
+                <Label Text="{Binding Quantity}"
+                       WidthRequest="30"
+                       HorizontalTextAlignment="Center"
+                       VerticalTextAlignment="Center"
+                       FontAttributes="Bold"/>
+                <Button Text="+"
+                        Command="{Binding IncreaseQuantityCommand}"
+                        Style="{StaticResource GhostButton}"
+                        WidthRequest="32"
+                        HeightRequest="32"
+                        Padding="0"/>
+            </HorizontalStackLayout>
 
-                        <Label Grid.Column="3"
-                                   Text="{Binding Unit}"
-                                   TextColor="{StaticResource TextSecondary}"
-                                   FontSize="12"
-                                   VerticalOptions="Center"
-                                   WidthRequest="48"
-                                   HorizontalTextAlignment="Center"/>
+            <Label Grid.Column="3"
+                   Text="{Binding Unit}"
+                   TextColor="{StaticResource TextSecondary}"
+                   FontSize="12"
+                   VerticalOptions="Center"
+                   WidthRequest="48"
+                   HorizontalTextAlignment="Center"/>
 
-                        <Button Grid.Column="4"
-                                        Text="Edytuj"
-                                        Command="{Binding EditProductCommand}"
-                                        Style="{StaticResource GhostButton}"
-                                        WidthRequest="64"
-                                        HeightRequest="32"
-                                        Padding="0"/>
+            <Button Grid.Column="4"
+                    Text="Edytuj"
+                    Command="{Binding EditProductCommand}"
+                    Style="{StaticResource GhostButton}"
+                    WidthRequest="64"
+                    HeightRequest="32"
+                    Padding="0"/>
 
-                        <Button Grid.Column="5"
-                                        Text="x"
-                                        Command="{Binding DeleteProductCommand}"
-                                        Style="{StaticResource GhostButton}"
-                                        TextColor="{StaticResource Danger}"
-                                        WidthRequest="32"
-                                        HeightRequest="32"
-                                        Padding="0"/>
-                </Grid>
+            <Button Grid.Column="5"
+                    Text="x"
+                    Command="{Binding DeleteProductCommand}"
+                    Style="{StaticResource GhostButton}"
+                    TextColor="{StaticResource Danger}"
+                    WidthRequest="32"
+                    HeightRequest="32"
+                    Padding="0"/>
+        </Grid>
 
         <Border.Triggers>
             <DataTrigger TargetType="Border"
-                    Binding="{Binding IsOptional}"
-                    Value="True">
+                         Binding="{Binding IsOptional}"
+                         Value="True">
                 <Setter Property="StrokeDashArray"
                         Value="2,2"/>
             </DataTrigger>
             <DataTrigger TargetType="Border"
-                    Binding="{Binding IsPurchased}"
-                    Value="True">
+                         Binding="{Binding IsPurchased}"
+                         Value="True">
                 <Setter Property="Opacity"
                         Value="0.5"/>
             </DataTrigger>

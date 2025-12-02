@@ -115,6 +115,7 @@ public class StoreListViewModel : BaseViewModel, IQueryAttributable, ISortablePr
 
 		FilteredProducts.Clear();
 		foreach (var product in filtered) {
+			product.ShowCategoryInsteadOfStore = true;
 			FilteredProducts.Add(product);
 		}
 	}

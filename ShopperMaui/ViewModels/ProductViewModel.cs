@@ -129,6 +129,23 @@ public class ProductViewModel : BaseViewModel {
 		? "Brak sklepu"
 		: StoreName!;
 
+	public string SecondaryDisplayText => ShowCategoryInsteadOfStore
+		? CategoryName
+		: StoreDisplayText;
+
+	public bool HasSecondaryInfo => ShowCategoryInsteadOfStore || HasStore;
+
+	private bool _showCategoryInsteadOfStore;
+	public bool ShowCategoryInsteadOfStore {
+		get => _showCategoryInsteadOfStore;
+		set {
+			if (SetProperty(ref _showCategoryInsteadOfStore, value)) {
+				OnPropertyChanged(nameof(SecondaryDisplayText));
+				OnPropertyChanged(nameof(HasSecondaryInfo));
+			}
+		}
+	}
+
 	public IReadOnlyList<string> AvailableUnits => Constants.AvailableUnits;
 
 	public ObservableCollection<string> AvailableStores => _category.AvailableStores;
